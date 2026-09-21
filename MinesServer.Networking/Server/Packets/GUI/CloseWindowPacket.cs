@@ -9,9 +9,11 @@ public readonly record struct CloseWindowPacket() : IRootServerPacket<CloseWindo
 {
     public ushort PacketCode => RootServerPacketCodeProvider.Cache<CloseWindowPacket>.Code;
 
-    public readonly int Size => Unsafe.SizeOf<CloseWindowPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public readonly int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static CloseWindowPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<CloseWindowPacket>();
+    public static CloseWindowPacket Decode(ReadOnlySpan<byte> input) => new();
 }

@@ -9,9 +9,11 @@ public readonly record struct OpenProgrammatorPacket : IRootServerPacket<OpenPro
 {
     public ushort PacketCode => RootServerPacketCodeProvider.Cache<OpenProgrammatorPacket>.Code;
 
-    public readonly int Size => Unsafe.SizeOf<OpenProgrammatorPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public readonly int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static OpenProgrammatorPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<OpenProgrammatorPacket>();
+    public static OpenProgrammatorPacket Decode(ReadOnlySpan<byte> input) => new();
 }

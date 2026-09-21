@@ -64,5 +64,9 @@ public enum ItemType : byte
     Meteorit,
     Mayak,
     GunBoss1,
-    MineX50
+    MineX50,
+    // Собственные члены сервера. Базовый тип byte (провод — 1 байт), поэтому sentinel = 255.
+    NPC,
+    CreditPack,
+    None = 255
 }

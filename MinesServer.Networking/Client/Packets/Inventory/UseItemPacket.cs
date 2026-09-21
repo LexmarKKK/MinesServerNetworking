@@ -9,9 +9,11 @@ public readonly record struct UseItemPacket() : IRootClientPacket<UseItemPacket>
 {
     public byte PacketCode => RootClientPacketCodeProvider.Cache<UseItemPacket>.Code;
 
-    public int Size => Unsafe.SizeOf<UseItemPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static UseItemPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<UseItemPacket>();
+    public static UseItemPacket Decode(ReadOnlySpan<byte> input) => new();
 }
