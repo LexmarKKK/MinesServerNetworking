@@ -111,7 +111,20 @@ namespace MinesServer.Utils
             }
         }
 
-        public static int Digits(this uint n) => (int)((n + uintTable[(int)Math.Log(n, 2)]) >> 32);
+        //  Old code used Math.Log(n, 2) -> -Infinity for n=0, overflowing uintTable.
+        //  Restored server behaviour (Log2(0)=0) without net7-only uint.Log2 to keep net481.
+        public static int Digits(this uint n) => (int)((n + uintTable[Log2(n)]) >> 32);
+
+        static int Log2(uint n)
+        {
+            int r = 0;
+            if (n >= 1u << 16) { r += 16; n >>= 16; }
+            if (n >= 1u << 8) { r += 8; n >>= 8; }
+            if (n >= 1u << 4) { r += 4; n >>= 4; }
+            if (n >= 1u << 2) { r += 2; n >>= 2; }
+            if (n >= 1u << 1) { r += 1; }
+            return r;
+        }
 
         public static int Digits(this long n)
         {

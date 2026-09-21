@@ -66,5 +66,6 @@ public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServe
         Register<ChatMutePacket>();
         Register<ChatMessageListPacket>();
         Register<ChatListPacket>();
+        Register<MovementSpeedPacket>();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace MinesServer.Data;
 
-public enum SkillType : byte
+public enum SkillType : sbyte
 {
     /// <summary>a | aacd | Защита от слизи</summary>
     SlimeProtection,
@@ -119,5 +119,8 @@ public enum SkillType : byte
     /// <summary>*d | deep | Глубинная добыча</summary>
     MineDeep,
     /// <summary>*g | gluo | Глюонная упаковка</summary>
-    GluonPacking
+    GluonPacking,
+
+    // Собственный sentinel сервера (у master отсутствует).
+    Unknown = -1
 }

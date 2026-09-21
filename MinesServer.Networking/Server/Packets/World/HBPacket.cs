@@ -12,6 +12,7 @@ public readonly record struct HBPacket(IReadOnlyList<IHBPacket> Payload) : IRoot
 
     public int Size =>
         sizeof(ushort) + // Payload.Length
+        Payload.Count + // PacketCode каждого события (1 байт на событие) — без этого Size занижен на число событий и кадр не совпадает с фактической кодировкой
         Payload.Sum(x => x.Size); // Payload
 
     public int Encode(Span<byte> output)

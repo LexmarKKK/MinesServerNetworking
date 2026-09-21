@@ -9,10 +9,12 @@ public readonly record struct ToggleAgressionPacket() : IActionClientPacket<Togg
 {
     public byte PacketCode => ActionClientPacketCodeProvider.Cache<ToggleAgressionPacket>.Code;
 
-    public int Size => Unsafe.SizeOf<ToggleAgressionPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static ToggleAgressionPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<ToggleAgressionPacket>();
+    public static ToggleAgressionPacket Decode(ReadOnlySpan<byte> input) => new();
 }
 

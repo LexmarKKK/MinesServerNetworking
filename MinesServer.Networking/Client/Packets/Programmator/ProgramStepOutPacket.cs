@@ -9,9 +9,11 @@ public readonly record struct ProgramStepOutPacket() : IRootClientPacket<Program
 {
     public byte PacketCode => RootClientPacketCodeProvider.Cache<ProgramStepOutPacket>.Code;
 
-    public int Size => Unsafe.SizeOf<ProgramStepOutPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static ProgramStepOutPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<ProgramStepOutPacket>();
+    public static ProgramStepOutPacket Decode(ReadOnlySpan<byte> input) => new();
 }

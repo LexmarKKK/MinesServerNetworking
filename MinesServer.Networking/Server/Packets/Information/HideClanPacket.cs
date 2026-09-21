@@ -9,9 +9,11 @@ public readonly record struct HideClanPacket() : IRootServerPacket<HideClanPacke
 {
     public ushort PacketCode => RootServerPacketCodeProvider.Cache<HideClanPacket>.Code;
 
-    public readonly int Size => Unsafe.SizeOf<HideClanPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public readonly int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static HideClanPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<HideClanPacket>();
+    public static HideClanPacket Decode(ReadOnlySpan<byte> input) => new();
 }

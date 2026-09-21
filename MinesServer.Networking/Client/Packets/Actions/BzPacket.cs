@@ -9,9 +9,11 @@ public readonly record struct BzPacket() : IActionClientPacket<BzPacket>
 {
     public byte PacketCode => ActionClientPacketCodeProvider.Cache<BzPacket>.Code;
 
-    public int Size => Unsafe.SizeOf<BzPacket>();
+    // Пустой пакет: payload нет. Явный 0 — Unsafe.SizeOf пустой структуры
+    // на Mono (Unity) даёт 0, на .NET 1; wire обязан не зависеть от рантайма.
+    public int Size => 0;
 
-    public int Encode(Span<byte> output) => output.UnsafeWrite(this);
+    public int Encode(Span<byte> output) => 0;
 
-    public static BzPacket Decode(ReadOnlySpan<byte> input) => input.UnsafeRead<BzPacket>();
+    public static BzPacket Decode(ReadOnlySpan<byte> input) => new();
 }
