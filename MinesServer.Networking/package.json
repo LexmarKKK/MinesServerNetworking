@@ -1,6 +1,6 @@
 {
   "name": "darkar25.fodinae.networking",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "displayName": "Fodinae Network Core",
   "description": "Shared networking protocol for Client and Server",
   "unity": "6000.2",
