@@ -1,7 +1,7 @@
 {
-  "name": "darkar25.fodinae.utils",
-  "version": "1.0.1",
-  "displayName": "Fodinae Network Core (Utils)",
+  "name": "darkar25.kern.utils",
+  "version": "1.0.2",
+  "displayName": "Kern Network Core (Utils)",
   "description": "Shared networking protocol for Client and Server",
   "unity": "6000.2",
   "documentationUrl": "https://github.com/darkar25/MinesServerNetworking",

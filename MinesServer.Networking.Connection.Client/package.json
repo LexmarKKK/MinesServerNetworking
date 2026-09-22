@@ -1,7 +1,7 @@
 {
-  "name": "darkar25.fodinae.networking.client",
-  "version": "1.0.0",
-  "displayName": "Fodinae Network Client",
+  "name": "darkar25.kern.networking.client",
+  "version": "1.0.1",
+  "displayName": "Kern Network Client",
   "description": "Shared networking protocol for Client and Server",
   "unity": "6000.2",
   "documentationUrl": "https://github.com/darkar25/MinesServerNetworking",
