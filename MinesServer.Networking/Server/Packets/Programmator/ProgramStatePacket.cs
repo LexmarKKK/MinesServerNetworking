@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace MinesServer.Networking.Server.Packets.Programmator;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public readonly record struct ProgramStatePacket(ProgramState State) : IRootServerPacket<ProgramStatePacket>
+public readonly record struct ProgramStatePacket(ProgramState State, bool IsMovementAllowed) : IRootServerPacket<ProgramStatePacket>
 {
     public ushort PacketCode => RootServerPacketCodeProvider.Cache<ProgramStatePacket>.Code;
 
