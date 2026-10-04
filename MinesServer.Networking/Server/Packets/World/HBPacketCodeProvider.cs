@@ -5,10 +5,10 @@ public class HBPacketCodeProvider : NetworkPacketCodeProvider<IHBPacket, byte, H
     static HBPacketCodeProvider()
     {
         Register<MapRegionPacket>();
-        Register<PackPacket>();
+        Register<BuildingPacket>();
         Register<RobotPositionPacket>();
         Register<AudioPacket>();
         Register<VFXPacket>();
-        Register<RemovePackPacket>();
+        Register<RemoveBuildingPacket>();
     }
 }

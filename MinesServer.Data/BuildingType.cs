@@ -1,6 +1,6 @@
 ﻿namespace MinesServer.Data;
 
-public enum PackType : ushort
+public enum BuildingType : ushort
 {
     None = ' ',
     Teleport = 'T',
