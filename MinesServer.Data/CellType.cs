@@ -1,9 +1,10 @@
-﻿namespace MinesServer.Data;
+namespace MinesServer.Data;
 
 public enum CellType : byte
 {
     Unloaded = 0,
     Pregener = 1,
+    CorruptedHypnoRock = 28,
     BuildingRoad = 29,
     Gate = 30,
     VolcanoBackground = 31,
@@ -29,6 +30,7 @@ public enum CellType : byte
     AliveBlack = 53,
     AliveWhite = 54,
     AliveRainbow = 55,
+    IridescentBackground = 56,
     WhiteSand = 60,
     DarkWhiteSand = 61,
     RustySand = 62,
