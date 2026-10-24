@@ -16,6 +16,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// Таблица уже расходилась с серверной: клиент добавил
 /// <c>OpenProgramListClickPacket</c>, сервер о нём не знал, коды после 18
 /// сдвинулись, и клиентские пакеты сервер декодировал как чужие.
+/// Новые пакеты регистрируются только в конец списка обеих сторон.
 /// </summary>
 internal class RootClientPacketCodeTableTests
 {
