@@ -43,7 +43,6 @@ public class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClien
         // Регистрация новых пакетов — только в конец списка: коды присваиваются
         // последовательно, вставка в середину сдвигает коды всех последующих пакетов.
         Register<OpenChatListPacket>();
-        Register<ChooseChatPacket>();
         Register<ChatMessageClickPacket>();
     }
 }
