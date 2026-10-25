@@ -1,4 +1,4 @@
-﻿namespace MinesServer.Data;
+namespace MinesServer.Data;
 
 public enum CellType : byte
 {
