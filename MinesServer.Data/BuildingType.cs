@@ -27,5 +27,10 @@ public enum BuildingType : ushort
     BombShop = 'b',
     Beacon = 'Z', // Почему Z...
     Clans = 'c',
-    Science = 'N' // Почему N... NauchniyCentr?
+    Science = 'N', // Почему N... NauchniyCentr?
+
+    // Новые паки сервера (заготовки 1x1 в items.json).
+    AutoDigger = 'A',
+    ChunkUpdater = 'H', // cHunkUpdater
+    GeoStorage = 'S'
 }

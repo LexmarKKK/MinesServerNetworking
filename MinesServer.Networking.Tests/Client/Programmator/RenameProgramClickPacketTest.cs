@@ -4,5 +4,5 @@ namespace MinesServer.Networking.Tests.Client.Programmator;
 
 internal class RenameProgramClickPacketTest : RootClientPacketTest<RenameProgramClickPacket>
 {
-    public override RenameProgramClickPacket Packet => new();
+    public override RenameProgramClickPacket Packet => new(42);
 }
