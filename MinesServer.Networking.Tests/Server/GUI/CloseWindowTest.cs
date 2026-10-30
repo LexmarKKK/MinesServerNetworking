@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI;
 
-internal class CloseWindowTest : RootServerPacketTest<CloseWindowPacket>
+internal sealed class CloseWindowTest : RootServerPacketTest<CloseWindowPacket>
 {
     public override CloseWindowPacket Packet => new();
 }

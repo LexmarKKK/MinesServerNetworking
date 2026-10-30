@@ -5,7 +5,7 @@
 
     Каталоги вывода заканчиваются на `~` намеренно: Unity не импортирует
     директории, чьё имя заканчивается на `~`, поэтому артефакты сборки пакетов
-    не засоряют проект клиента. По этой же причине стандартные правила
+    не попадают в каталоги исходников Unity. По этой же причине стандартные правила
     .gitignore (`bin/`, `obj/`) их не покрывают — покрывает .gitignore репозитория.
 
     Свойства заданы здесь, а не в каждом .csproj, потому что .csproj
@@ -18,6 +18,7 @@
   <PropertyGroup>
     <BaseIntermediateOutputPath>obj~\</BaseIntermediateOutputPath>
     <OutputPath>bin~\</OutputPath>
+    <LangVersion>12.0</LangVersion>
   </PropertyGroup>
 
 </Project>

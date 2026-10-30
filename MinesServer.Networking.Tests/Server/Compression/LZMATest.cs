@@ -5,7 +5,7 @@ using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 namespace MinesServer.Networking.Tests.Server.Compression;
 
-internal class LZMATest : RootServerPacketTest<LzmaPacket>
+internal sealed class LZMATest : RootServerPacketTest<LzmaPacket>
 {
     public override LzmaPacket Packet => new(new OpenWindowPacket("TestWindow", 50, 50, new DockPanelPacket()
     {

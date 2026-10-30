@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 
@@ -6,7 +6,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 
 public readonly record struct GeologyPacket(int Current, int Max, CellType Cell, string Text) : IRootServerPacket<GeologyPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<GeologyPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<GeologyPacket>();
 
     public int Size =>
         sizeof(int) + // Current

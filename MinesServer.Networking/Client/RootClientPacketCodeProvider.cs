@@ -1,16 +1,20 @@
-﻿using MinesServer.Networking.Client.Packets.Actions;
+#nullable enable
+using MinesServer.Networking.Client.Packets.Actions;
 using MinesServer.Networking.Client.Packets.Chat;
 using MinesServer.Networking.Client.Packets.Connection;
 using MinesServer.Networking.Client.Packets.GUI;
 using MinesServer.Networking.Client.Packets.Inventory;
 using MinesServer.Networking.Client.Packets.Programmator;
 using MinesServer.Networking.Client.Packets.Utilities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MinesServer.Networking.Client;
 
-public class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClientPacket, byte, RootClientPacketCodeProvider>
+public sealed class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClientPacket, byte>
 {
-    static RootClientPacketCodeProvider()
+    private static readonly RootClientPacketCodeProvider _instance = new();
+
+    private RootClientPacketCodeProvider()
     {
         Register<ClientHelloPacket>();
         Register<QueryChatHistoryPacket>();
@@ -45,4 +49,15 @@ public class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClien
         Register<OpenChatListPacket>();
         Register<ChatMessageClickPacket>();
     }
+
+    public new static byte GetPacketCode<TPacket>() where TPacket : IRootClientPacket => ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).GetPacketCode<TPacket>();
+
+    public new static byte GetPacketCode(IRootClientPacket packet) => ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).GetPacketCode(packet);
+
+    public new static NetworkPacketDecoder<IRootClientPacket> GetDecoder(byte identity) => ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).GetDecoder(identity);
+
+    public new static bool TryGetDecoder(byte identity, [NotNullWhen(true)] out NetworkPacketDecoder<IRootClientPacket>? decoder) =>
+        ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).TryGetDecoder(identity, out decoder);
+
+    public new static bool IsValid(byte identity) => ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).IsValid(identity);
 }

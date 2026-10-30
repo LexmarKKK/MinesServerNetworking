@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.GUI;
 
-internal class OpenProgramListClickTest : RootClientPacketTest<OpenProgramListClickPacket>
+internal sealed class OpenProgramListClickTest : RootClientPacketTest<OpenProgramListClickPacket>
 {
     public override OpenProgramListClickPacket Packet => new();
 }

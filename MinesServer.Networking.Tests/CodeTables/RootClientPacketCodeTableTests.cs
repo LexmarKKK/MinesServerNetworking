@@ -20,7 +20,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// <c>ChooseChatPacket (29)</c> удалён по ревью PR: выбор чата = запрос
 /// истории по тегу, и код 29 занял <c>ChatMessageClickPacket</c>.
 /// </summary>
-internal class RootClientPacketCodeTableTests
+internal sealed class RootClientPacketCodeTableTests
 {
     [Test]
     public void ClientPacketCodes_MatchRegistrationOrder()

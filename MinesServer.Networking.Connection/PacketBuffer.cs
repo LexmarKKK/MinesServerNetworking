@@ -1,5 +1,7 @@
-﻿using MinesServer.Networking.Exceptions;
+#nullable enable
+using MinesServer.Networking.Exceptions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace MinesServer.Networking.Connection;
@@ -47,7 +49,7 @@ public class PacketBuffer
         _writePos += length;
     }
 
-    public bool TryTake(out byte[] packet)
+    public bool TryTake([NotNullWhen(true)] out byte[]? packet)
     {
         packet = null;
         int available = _writePos - _readPos;
@@ -137,4 +139,3 @@ public class PacketBuffer
         }
     }
 }
-    

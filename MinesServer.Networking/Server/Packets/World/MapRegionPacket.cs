@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct MapRegionPacket(ushort X, ushort Y, byte Width, byte Height, CellType[] Payload) : IHBPacket<MapRegionPacket>
 {
-    public byte PacketCode => HBPacketCodeProvider.Cache<MapRegionPacket>.Code;
+    public byte PacketCode => HBPacketCodeProvider.GetPacketCode<MapRegionPacket>();
 
     public int Size =>
         sizeof(ushort) + // X
@@ -45,4 +45,16 @@ public readonly record struct MapRegionPacket(ushort X, ushort Y, byte Width, by
         Width == other.Width &&
         Height == other.Height &&
         Payload.SequenceEqual(other.Payload);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(X);
+        hash.Add(Y);
+        hash.Add(Width);
+        hash.Add(Height);
+        foreach (var cell in Payload)
+            hash.Add(cell);
+        return hash.ToHashCode();
+    }
+
 }

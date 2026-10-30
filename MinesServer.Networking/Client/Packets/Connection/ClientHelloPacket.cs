@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Client.Packets.Connection;
 
 public readonly record struct ClientHelloPacket(int ClientVersion, string OS, int OSVersion, string HardwareFingerprint, string AuthToken) : IRootClientPacket<ClientHelloPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<ClientHelloPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<ClientHelloPacket>();
 
     public int Size =>
         sizeof(int) + // ClientVersion

@@ -1,4 +1,5 @@
-﻿using MinesServer.Networking.Exceptions;
+﻿#nullable enable
+using MinesServer.Networking.Exceptions;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -47,4 +48,13 @@ public abstract record class ContainerComponentPacket : GUIComponentPacket, ICon
     public virtual bool Equals(ContainerComponentPacket? other) =>
         base.Equals(other) &&
         Children.SequenceEqual(other.Children);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(base.GetHashCode());
+        foreach (var child in Children)
+            hash.Add(child);
+        return hash.ToHashCode();
+    }
+
 }

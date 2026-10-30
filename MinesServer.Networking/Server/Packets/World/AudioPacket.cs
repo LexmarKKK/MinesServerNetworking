@@ -1,5 +1,5 @@
-﻿using MinesServer.Data;
-using MinesServer.Networking.Shared.Packets;
+using MinesServer.Data;
+using MinesServer.Networking.Contracts.Packets;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
-public readonly record struct VFXPacket(VFX EffectType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<VFXPacket>
+public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<AudioPacket>
 {
-    public byte PacketCode => HBPacketCodeProvider.Cache<VFXPacket>.Code;
+    public byte PacketCode => HBPacketCodeProvider.GetPacketCode<AudioPacket>();
 
     public int Size =>
-        sizeof(VFX) + // EffectType
+        sizeof(SFX) + // EffectType
         sizeof(ushort) + // TargetBotId
         sizeof(ushort) + // X
         sizeof(ushort) + // Y
@@ -32,10 +32,10 @@ public readonly record struct VFXPacket(VFX EffectType, ushort TargetBotId, usho
         return writer.Position;
     }
 
-    public static VFXPacket Decode(ReadOnlySpan<byte> input)
+    public static AudioPacket Decode(ReadOnlySpan<byte> input)
     {
         var reader = input.Reader();
-        var effect = reader.Read<VFX>();
+        var effect = reader.Read<SFX>();
         var botid = reader.ReadU2();
         var x = reader.ReadU2();
         var y = reader.ReadU2();
@@ -49,10 +49,22 @@ public readonly record struct VFXPacket(VFX EffectType, ushort TargetBotId, usho
         return new(effect, botid, x, y, parameters);
     }
 
-    public bool Equals(VFXPacket other) =>
+    public bool Equals(AudioPacket other) =>
         EffectType == other.EffectType &&
         TargetBotId == other.TargetBotId &&
         X == other.X &&
         Y == other.Y &&
         Parameters.SequenceEqual(other.Parameters);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(EffectType);
+        hash.Add(TargetBotId);
+        hash.Add(X);
+        hash.Add(Y);
+        foreach (var parameter in Parameters)
+            hash.Add(parameter);
+        return hash.ToHashCode();
+    }
+
 }

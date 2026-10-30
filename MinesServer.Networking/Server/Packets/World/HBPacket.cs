@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Exceptions;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct HBPacket(IReadOnlyList<IHBPacket> Payload) : IRootServerPacket<HBPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<HBPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<HBPacket>();
 
     public int Size =>
         sizeof(ushort) + // Payload.Length
@@ -44,4 +44,12 @@ public readonly record struct HBPacket(IReadOnlyList<IHBPacket> Payload) : IRoot
 
     public bool Equals(HBPacket other) =>
         Payload.SequenceEqual(other.Payload);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        foreach (var packet in Payload)
+            hash.Add(packet);
+        return hash.ToHashCode();
+    }
+
 }

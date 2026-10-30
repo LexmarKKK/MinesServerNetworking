@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.GUI;
 
-internal class OpenWindowTest : RootServerPacketTest<OpenWindowPacket>
+internal sealed class OpenWindowTest : RootServerPacketTest<OpenWindowPacket>
 {
     public override OpenWindowPacket Packet => new("TestWindow", 800, 600, new PanelPacket()
     {

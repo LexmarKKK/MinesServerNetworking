@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Mission;
 
-internal class MissionArrowTest : RootServerPacketTest<MissionArrowPacket>
+internal sealed class MissionArrowTest : RootServerPacketTest<MissionArrowPacket>
 {
     public override MissionArrowPacket Packet => new(1234, 5678);
 }

@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class DailyBonusStateTest : RootServerPacketTest<DailyBonusStatePacket>
+internal sealed class DailyBonusStateTest : RootServerPacketTest<DailyBonusStatePacket>
 {
     public override DailyBonusStatePacket Packet => new(true);
 }

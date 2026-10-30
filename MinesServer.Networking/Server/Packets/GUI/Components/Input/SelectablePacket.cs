@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
+using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 using MinesServer.Utils;
 using System;
 
@@ -6,9 +6,9 @@ namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
 
 public record class SelectablePacket : InputComponentPacket<bool>, IGUIComponentPacket<SelectablePacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<SelectablePacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<SelectablePacket>();
 
-    public override bool DefaultValue { get; init; } = false;
+    public override bool DefaultValue { get; init; }
 
     public ImagePacket Checked { get; init; } = new() { URI = "gui/check/generic_on.png" };
 

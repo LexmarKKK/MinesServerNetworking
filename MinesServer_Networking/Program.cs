@@ -1,9 +1,9 @@
 ﻿using MinesServer.Networking.Client.Packets;
 using MinesServer.Networking.Client.Packets.Chat;
 
-namespace MinesServer_Networking
+namespace MinesServer.Networking.Smoke
 {
-    internal class Program
+    internal sealed class Program
     {
         static void Main(string[] args)
         {

@@ -8,7 +8,7 @@ using MinesServer.Networking.Client.Packets.Programmator;
 using MinesServer.Networking.Connection;
 using MinesServer.Networking.Connection.Server;
 using MinesServer.Networking.Exceptions;
-using MinesServer.Networking.Shared;
+using MinesServer.Networking.Contracts;
 using NetCoreServer;
 using SocketClient = System.Net.Sockets.TcpClient;
 
@@ -23,7 +23,7 @@ namespace MinesServer.Networking.Tests;
 /// Сокет настоящий, а не заглушка: PacketBuffer и ReceiveLoop — ровно то, что
 /// здесь проверяется. Порт свободный, чтобы тесты не дрались за один номер.
 /// </summary>
-internal class ServerTcpConnectionTests
+internal sealed class ServerTcpConnectionTests
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
@@ -44,14 +44,20 @@ internal class ServerTcpConnectionTests
 
     private sealed class ProbeServer : TcpServer
     {
+        private readonly TaskCompletionSource<TcpConnection> _sessionCreated =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
         public TcpConnection? Session { get; private set; }
+        public Task<TcpConnection> SessionCreated => _sessionCreated.Task;
 
         public ProbeServer(int port) : base(IPAddress.Loopback, port) { }
 
         protected override TcpSession CreateSession()
         {
-            Session = new TcpConnection(this);
-            return Session;
+            var session = new TcpConnection(this);
+            Session = session;
+            _sessionCreated.TrySetResult(session);
+            return session;
         }
     }
 
@@ -74,8 +80,8 @@ internal class ServerTcpConnectionTests
     {
         var packet = new ClientPacket(timestamp, payload);
         var buffer = new byte[packet.Size];
-        packet.Encode(buffer);
-        return buffer;
+        int written = packet.Encode(buffer);
+        return buffer.AsSpan(0, written).ToArray();
     }
 
     /// <summary>Кадр с корректной длиной и заголовком, но несуществующим кодом.</summary>
@@ -97,12 +103,10 @@ internal class ServerTcpConnectionTests
             using var client = new SocketClient();
             await client.ConnectAsync(IPAddress.Loopback, server.Port);
 
-            // CreateSession вызывается из accept-потока: соединение может быть
-            // принято позже, чем вернулся ConnectAsync.
-            while (server.Session is null)
-                await Task.Delay(10);
-
-            await body(new Host((IClientConnection)server.Session, client.GetStream()));
+            // CreateSession вызывается из accept-потока: ограниченно ждём его,
+            // чтобы при проблеме accept-пути тест завершился диагностикой, а не завис.
+            var session = await WaitFor(server.SessionCreated);
+            await body(new Host(session, client.GetStream()));
         }
         finally
         {

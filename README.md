@@ -13,20 +13,24 @@
 
 ```
 dotnet build          # MinesServer_Networking.slnx
-dotnet test           # 363 теста, покрытие всех 109 зарегистрированных сообщений
+dotnet test           # тесты кодирования, таблиц кодов, ошибок кадров, сжатия и TCP
 ```
 
-ЦелевыеFramework'ы различаются по назначению, и это важно:
+Все исходники пакетов компилируются с C# 12. Unity подключает их через `asmdef`
+и применяет клиентский `Assets/csc.rsp`; проектная сборка проверяет код на
+целевом профиле Unity и отдельно собирает сервер под .NET 9.
 
-| Проект | Таргеты | Кто собирает |
-|---|---|---|
-| `MinesServer.Data` | `net9.0;net481` | оба |
-| `MinesServer.Utils` | `net481;net9.0` | оба |
-| `MinesServer.Networking` | `net481;net9.0` | оба |
-| `MinesServer.Networking.Connection` | `net481;net9.0` | оба |
-| `MinesServer.Networking.Connection.Client` | `net481` | клиент (Unity/Mono) |
-| `MinesServer.Networking.Connection.Server` | `net9.0` | сервер |
-| `MinesServer.Networking.Tests` | `net9.0` | CI |
+| Проект | Версия C# | Целевой API-профиль | Кто собирает |
+|---|---|---|---|
+| `MinesServer.Data` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Utils` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking.Connection` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking.Connection.Server` | C# 12 | `net9.0` | сервер |
+| `MinesServer.Networking.Tests` | C# 12 | `net9.0` | CI |
+
+`netstandard2.1` и `net9.0` — целевые API-профили; они не задают версию C#.
+Для всех проектов пакета компилятор закреплён на C# 12 в `Directory.Build.props`.
 
 Схема решения — `MinesServer_Networking.slnx`. Классического `.sln` рядом с ним
 нет намеренно: при двух файлах решений в корне `dotnet build` без аргументов
@@ -80,9 +84,8 @@ Wire-код пакета — **его позиция в порядке вызо�
 перенумеровываются все последующие коды.
 
 `IsValid` проверяет обе границы: код `0` валиден (первому зарегистрированному
-пакету соответствует ноль), код `>= MaxIdentity` — нет. Ветки `net7+` и `net481`
-обязаны быть семантически идентичны: клиент собирает `net481`, сервер — `net9.0`,
-и расхождение проявится только на одной из сторон.
+пакету соответствует ноль), код `>= MaxIdentity` — нет. Клиент и сервер обязаны
+использовать одну таблицу кодов; тесты проверяют её снимок и декодирование.
 
 ## Сжатие
 
@@ -148,9 +151,8 @@ wire; добавление поля в **середину** — ломает.
 | Клиентские корневые, реализованные | 7 | Нет. Пустой payload компенсирован состоянием сервера |
 | Клиентские корневые, no-op на сервере | 7 | Серверная работа, не протокол |
 
-`Size => 0` — сознательный костыль: `Unsafe.SizeOf` пустой структуры различается
-на Mono (Unity) = 0 и на .NET = 1, и wire-совместимость достигнута именно нулевым
-payload. Это не семантика протокола.
+Нулевая длина payload — часть wire-контракта пустых пакетов. Их размер задаётся
+явно как `0` и не зависит от физического размера структуры в конкретном рантайме.
 
 **Модель владения программатором.** Список программ, имена и исходники хранит
 сервер, на роботе. Номер программы — её индекс в этом списке, поэтому
@@ -210,7 +212,6 @@ MinesServer.Data/                     перечисления и структу
 MinesServer.Utils/                     MemoryReader / MemoryWriter, расширения Span
 MinesServer.Networking/                пакеты, код-провайдеры, кодеки, IUnreliableLengthPacket
 MinesServer.Networking.Connection/     PacketBuffer, IConnection, контракт ошибок
-MinesServer.Networking.Connection.Client/  клиентский транспорт (net481, Unity)
 MinesServer.Networking.Connection.Server/  серверный транспорт (net9.0)
 MinesServer.Networking.Tests/          round-trip тесты, снапшоты кодов, негативные тесты
 MinesServer_Networking/                консольный smoke-стенд

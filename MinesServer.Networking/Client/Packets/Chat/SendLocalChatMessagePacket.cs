@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Client.Packets.Chat;
 
 public readonly record struct SendLocalChatMessagePacket(string Message) : IRootClientPacket<SendLocalChatMessagePacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<SendLocalChatMessagePacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<SendLocalChatMessagePacket>();
 
     public int Size => Message.Length * 2; // Message
 

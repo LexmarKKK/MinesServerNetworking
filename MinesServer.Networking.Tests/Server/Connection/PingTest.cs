@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Connection;
 
-internal class PingTest : RootServerPacketTest<PingPacket>
+internal sealed class PingTest : RootServerPacketTest<PingPacket>
 {
-    public override PingPacket Packet => new(DateTime.UtcNow.Ticks, 123);
+    public override PingPacket Packet => new(0x1122334455667788, 123);
 }

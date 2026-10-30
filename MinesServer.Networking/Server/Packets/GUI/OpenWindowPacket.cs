@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Exceptions;
 using MinesServer.Networking.Server.Packets.GUI.Components;
 using MinesServer.Utils;
 using System;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.GUI;
 
 public readonly record struct OpenWindowPacket(string WindowTag, ushort Width, ushort Height, IGUIComponentPacket Content) : IRootServerPacket<OpenWindowPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<OpenWindowPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<OpenWindowPacket>();
 
     public readonly int Size =>
         sizeof(byte) // WindowTag.Length

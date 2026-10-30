@@ -10,7 +10,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// Адресует вообще все игровые действия, и перестановка Register молча отправила
 /// бы «копать» в «повернуться» — это выглядело бы как «сервер иногда не копает».
 /// </summary>
-internal class ActionClientPacketCodeTableTests
+internal sealed class ActionClientPacketCodeTableTests
 {
     [Test]
     public void ActionPacketCodes_MatchRegistrationOrder()

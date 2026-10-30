@@ -1,4 +1,5 @@
-﻿using MinesServer.Utils;
+#nullable enable
+using MinesServer.Utils;
 using System;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Connection;
 
 public readonly record struct WorldInitPacket(string CodeName, string DisplayName, ushort Width, ushort Height, CellConfigurationPacket[] Cells, byte[][] TileGroups, WorldTextureDefinitionPacket[]? TextureManifest = null) : IRootServerPacket<WorldInitPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<WorldInitPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<WorldInitPacket>();
 
     public int Size =>
         sizeof(byte) + // CodeName.Length
@@ -90,4 +91,20 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
         (TextureManifest ?? Array.Empty<WorldTextureDefinitionPacket>()).SequenceEqual(other.TextureManifest ?? Array.Empty<WorldTextureDefinitionPacket>()) &&
         TileGroups.Length == other.TileGroups.Length &&
         TileGroups.SelectMany(x => x).SequenceEqual(other.TileGroups.SelectMany(x => x));
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(CodeName);
+        hash.Add(DisplayName);
+        hash.Add(Width);
+        hash.Add(Height);
+        foreach (var cell in Cells)
+            hash.Add(cell);
+        foreach (var tile in TileGroups.SelectMany(group => group))
+            hash.Add(tile);
+        foreach (var texture in TextureManifest ?? Array.Empty<WorldTextureDefinitionPacket>())
+            hash.Add(texture);
+        return hash.ToHashCode();
+    }
+
 }

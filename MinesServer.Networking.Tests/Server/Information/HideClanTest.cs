@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class HideClanTest : RootServerPacketTest<HideClanPacket>
+internal sealed class HideClanTest : RootServerPacketTest<HideClanPacket>
 {
     public override HideClanPacket Packet => new();
 }

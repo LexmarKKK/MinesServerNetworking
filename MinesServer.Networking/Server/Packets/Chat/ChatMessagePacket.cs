@@ -54,4 +54,18 @@ public readonly record struct ChatMessagePacket(long Id, long Timestamp, int Pla
         PlayerName == other.PlayerName &&
         MessageColor.ToArgb() == other.MessageColor.ToArgb() &&
         Message == other.Message;
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Id);
+        hash.Add(Timestamp);
+        hash.Add(PlayerId);
+        hash.Add(ClanId);
+        hash.Add(NicknameColor.ToArgb());
+        hash.Add(PlayerName);
+        hash.Add(MessageColor.ToArgb());
+        hash.Add(Message);
+        return hash.ToHashCode();
+    }
+
 }

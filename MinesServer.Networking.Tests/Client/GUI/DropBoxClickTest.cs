@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.GUI;
 
-internal class DropBoxClickTest : RootClientPacketTest<DropBoxClickPacket>
+internal sealed class DropBoxClickTest : RootClientPacketTest<DropBoxClickPacket>
 {
     public override DropBoxClickPacket Packet => new();
 }

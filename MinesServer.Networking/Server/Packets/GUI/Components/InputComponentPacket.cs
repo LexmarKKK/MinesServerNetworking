@@ -1,4 +1,5 @@
-﻿using MinesServer.Utils;
+﻿#nullable enable
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components;
@@ -63,4 +64,14 @@ public abstract record class InputComponentPacket<TValue> : GUIComponentPacket, 
         other.Name == Name &&
         other.IsEnabled == IsEnabled &&
         other.DefaultValue.Equals(DefaultValue);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(base.GetHashCode());
+        hash.Add(Name);
+        hash.Add(IsEnabled);
+        hash.Add(DefaultValue);
+        return hash.ToHashCode();
+    }
+
 }

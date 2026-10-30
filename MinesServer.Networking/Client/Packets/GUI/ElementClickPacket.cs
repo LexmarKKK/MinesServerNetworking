@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Shared.Packets;
+using MinesServer.Networking.Contracts.Packets;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Client.Packets.GUI;
 
 public readonly record struct ElementClickPacket(string WindowTag, int ElementIndex, IReadOnlyList<StringPairPacket> Context) : IRootClientPacket<ElementClickPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<ElementClickPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<ElementClickPacket>();
 
     public int Size =>
         sizeof(byte) // WindowTag.Length
@@ -45,4 +45,14 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
         WindowTag == other.WindowTag &&
         ElementIndex == other.ElementIndex &&
         Context.SequenceEqual(other.Context);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(WindowTag);
+        hash.Add(ElementIndex);
+        foreach (var item in Context)
+            hash.Add(item);
+        return hash.ToHashCode();
+    }
+
 }

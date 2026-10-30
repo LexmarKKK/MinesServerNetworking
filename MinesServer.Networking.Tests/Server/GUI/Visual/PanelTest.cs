@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Visual;
 
-internal class PanelTest : PacketTest<PanelPacket>
+internal sealed class PanelTest : PacketTest<PanelPacket>
 {
     public override PanelPacket Packet => new();
 }

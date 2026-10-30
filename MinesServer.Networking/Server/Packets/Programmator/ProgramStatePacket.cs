@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Programmator;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct ProgramStatePacket(ProgramState State, bool IsMovementAllowed) : IRootServerPacket<ProgramStatePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ProgramStatePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ProgramStatePacket>();
 
     public int Size => Unsafe.SizeOf<ProgramStatePacket>();
 

@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Exceptions;
 using MinesServer.Utils;
 using SharpCompress.Compressors.LZMA;
 using System;
@@ -11,9 +11,16 @@ namespace MinesServer.Networking.Server.Packets.Compression;
 public readonly record struct LzmaPacket(IRootServerPacket Payload) : IRootServerPacket<LzmaPacket>, IUnreliableLengthPacket
 {
     private static readonly LzmaEncoderProperties _propsInstance = LzmaEncoderProperties.Default;
-    private static readonly byte[] _encoderProperties = new LzmaStream(_propsInstance, false, null).Properties;
+    private static readonly byte[] _encoderProperties = CreateEncoderProperties();
 
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<LzmaPacket>.Code;
+    private static byte[] CreateEncoderProperties()
+    {
+        using var output = new MemoryStream();
+        using var stream = LzmaStream.Create(_propsInstance, false, output);
+        return stream.Properties;
+    }
+
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<LzmaPacket>();
 
     // There is no reliable way to predict the length of a compressed lzma payload, so assume the worst and treat the payload as uncompressed.
     // This shouldn't affect encoding and decoding.
@@ -37,7 +44,7 @@ public readonly record struct LzmaPacket(IRootServerPacket Payload) : IRootServe
             int written = writer.Position;
 
             using var outStream = new MemoryStream();
-            using (var lzStream = new LzmaStream(_propsInstance, false, outStream))
+            using (var lzStream = LzmaStream.Create(_propsInstance, false, outStream))
                 lzStream.Write(encoded, 0, written);
 
             var compressedBytes = outStream.GetBuffer().AsSpan(0, (int)outStream.Length);
@@ -73,7 +80,7 @@ public readonly record struct LzmaPacket(IRootServerPacket Payload) : IRootServe
             fixed (byte* pInput = &MemoryMarshal.GetReference(compressedPayload))
             {
                 using var inStream = new UnmanagedMemoryStream(pInput, compressedPayload.Length);
-                using var lzStream = new LzmaStream(_encoderProperties, inStream, -1, declared);
+                using var lzStream = LzmaStream.Create(_encoderProperties, inStream, -1, declared);
                 lzStream.CopyTo(outStream);
             }
         }

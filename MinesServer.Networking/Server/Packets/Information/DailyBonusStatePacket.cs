@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct DailyBonusStatePacket(bool Enabled) : IRootServerPacket<DailyBonusStatePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<DailyBonusStatePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<DailyBonusStatePacket>();
 
     public readonly int Size => Unsafe.SizeOf<DailyBonusStatePacket>();
 

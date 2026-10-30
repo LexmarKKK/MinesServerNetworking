@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Information.StatusPanel;
 
 public readonly record struct ClearStatusLinePacket(string Tag) : IRootServerPacket<ClearStatusLinePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ClearStatusLinePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ClearStatusLinePacket>();
 
     public int Size =>
         Tag.Length; // Tag

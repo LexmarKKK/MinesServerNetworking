@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.Connection;
 
 namespace MinesServer.Networking.Tests.Server.Connection;
 
-internal class WorldInitTest : RootServerPacketTest<WorldInitPacket>
+internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
 {
     public override WorldInitPacket Packet => new("test", "Тестовый мир", 10, 10,
         [

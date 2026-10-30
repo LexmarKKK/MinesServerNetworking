@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI;
 
-internal class ModalWindowTest : RootServerPacketTest<ModalWindowPacket>
+internal sealed class ModalWindowTest : RootServerPacketTest<ModalWindowPacket>
 {
     public override ModalWindowPacket Packet => new(
         "Confirmation",

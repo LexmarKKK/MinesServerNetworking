@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Programmator;
 
 public readonly record struct UpdateProgramPacket(int ProgramId, string DisplayName, IReadOnlyList<(ProgAction Operator, string Label, string Value)> Instructions, int[] Breakpoints) : IRootServerPacket<UpdateProgramPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<UpdateProgramPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<UpdateProgramPacket>();
 
     public int Size =>
         sizeof(int) + // ProgramId
@@ -48,4 +48,16 @@ public readonly record struct UpdateProgramPacket(int ProgramId, string DisplayN
         DisplayName == other.DisplayName &&
         Instructions.SequenceEqual(other.Instructions) &&
         Breakpoints.SequenceEqual(other.Breakpoints);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(ProgramId);
+        hash.Add(DisplayName);
+        foreach (var instruction in Instructions)
+            hash.Add(instruction);
+        foreach (var breakpoint in Breakpoints)
+            hash.Add(breakpoint);
+        return hash.ToHashCode();
+    }
+
 }

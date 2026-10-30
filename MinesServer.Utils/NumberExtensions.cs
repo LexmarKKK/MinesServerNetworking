@@ -1,8 +1,5 @@
-﻿#if NET7_0_OR_GREATER
-using System.Numerics;
-#endif
-
 using System;
+using System.Globalization;
 
 namespace MinesServer.Utils
 {
@@ -18,39 +15,7 @@ namespace MinesServer.Utils
             42949672960, 42949672960
             };
 
-#if NET7_0_OR_GREATER
-        public static int WriteToSpanAsASCII<T>(this T number, Span<byte> destination) where T : IBinaryInteger<T>
-        {
-            if (T.IsZero(number))
-            {
-                destination[0] = (byte)'0';
-                return 1;
-            }
-
-            bool isNegative = T.IsNegative(number);
-            T absNumber = T.Abs(number);
-
-            Span<byte> buffer = stackalloc byte[40];
-            int index = buffer.Length;
-
-            T ten = T.CreateChecked(10);
-
-            do
-            {
-                (absNumber, var remainder) = T.DivRem(absNumber, ten);
-                buffer[--index] = (byte)(byte.CreateTruncating(remainder) + '0');
-            } while (!T.IsZero(absNumber));
-
-            if (isNegative)
-                buffer[--index] = (byte)'-';
-
-            int length = buffer.Length - index;
-            buffer.Slice(index, length).CopyTo(destination);
-            return length;
-        }
-#endif
-
-        public static int Digits(this Enum e) => Digits(Convert.ToInt32(e));
+        public static int Digits(this Enum e) => Digits(Convert.ToInt32(e, CultureInfo.InvariantCulture));
 
         public static int Digits(this short n)
         {
@@ -112,7 +77,7 @@ namespace MinesServer.Utils
         }
 
         //  Old code used Math.Log(n, 2) -> -Infinity for n=0, overflowing uintTable.
-        //  Restored server behaviour (Log2(0)=0) without net7-only uint.Log2 to keep net481.
+        //  Restored server behaviour (Log2(0)=0) without uint.Log2, which is not in the Unity API profile.
         public static int Digits(this uint n) => (int)((n + uintTable[Log2(n)]) >> 32);
 
         static int Log2(uint n)
@@ -177,24 +142,36 @@ namespace MinesServer.Utils
         public static int Digits(this ulong n)
         {
             if (n < 10UL) return 1;
-            if (n < 100UL) return 2;
-            if (n < 1000UL) return 3;
-            if (n < 10000UL) return 4;
-            if (n < 100000UL) return 5;
-            if (n < 1000000UL) return 6;
-            if (n < 10000000UL) return 7;
-            if (n < 100000000UL) return 8;
-            if (n < 1000000000UL) return 9;
-            if (n < 10000000000UL) return 10;
-            if (n < 100000000000UL) return 11;
-            if (n < 1000000000000UL) return 12;
-            if (n < 10000000000000UL) return 13;
-            if (n < 100000000000000UL) return 14;
-            if (n < 1000000000000000UL) return 15;
-            if (n < 10000000000000000UL) return 16;
-            if (n < 100000000000000000UL) return 17;
-            if (n < 1000000000000000000UL) return 18;
-            return 19;
+            if (n < 1_000UL) return n < 100UL ? 2 : 3;
+            if (n < 100_000UL) return n < 10_000UL ? 4 : 5;
+
+            if (n < 1_000_000_000UL)
+            {
+                if (n < 10_000_000UL) return n < 1_000_000UL ? 6 : 7;
+                return n < 100_000_000UL ? 8 : 9;
+            }
+
+            if (n < 100_000_000_000_000UL)
+            {
+                if (n < 1_000_000_000_000UL)
+                {
+                    if (n < 10_000_000_000UL) return 10;
+                    return n < 100_000_000_000UL ? 11 : 12;
+                }
+
+                return n < 10_000_000_000_000UL ? 13 : 14;
+            }
+
+            if (n < 100_000_000_000_000_000UL)
+            {
+                if (n < 1_000_000_000_000_000UL) return 15;
+                return n < 10_000_000_000_000_000UL ? 16 : 17;
+            }
+
+            if (n < 10_000_000_000_000_000_000UL)
+                return n < 1_000_000_000_000_000_000UL ? 18 : 19;
+
+            return 20;
         }
     }
 }

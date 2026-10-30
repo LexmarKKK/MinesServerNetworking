@@ -1,4 +1,6 @@
-﻿using System;
+#nullable enable
+using System;
+using System.Diagnostics.CodeAnalysis;
 using MinesServer.Networking.Server.Packets.Chat;
 using MinesServer.Networking.Server.Packets.Compression;
 using MinesServer.Networking.Server.Packets.Connection;
@@ -14,9 +16,11 @@ using MinesServer.Networking.Server.Packets.World;
 
 namespace MinesServer.Networking.Server;
 
-public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort, RootServerPacketCodeProvider>
+public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort>
 {
-    static RootServerPacketCodeProvider()
+    private static readonly RootServerPacketCodeProvider _instance = new();
+
+    private RootServerPacketCodeProvider()
     {
         Register<OutdatedClientPacket>();
         Register<TeleportPacket>();
@@ -69,11 +73,22 @@ public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServe
         Register<ChatListPacket>();
         Register<MovementSpeedPacket>();
     }
+
+    public new static ushort GetPacketCode<TPacket>() where TPacket : IRootServerPacket => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetPacketCode<TPacket>();
+
+    public new static ushort GetPacketCode(IRootServerPacket packet) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetPacketCode(packet);
+
+    public new static NetworkPacketDecoder<IRootServerPacket> GetDecoder(ushort identity) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetDecoder(identity);
+
+    public new static bool TryGetDecoder(ushort identity, [NotNullWhen(true)] out NetworkPacketDecoder<IRootServerPacket>? decoder) =>
+        ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).TryGetDecoder(identity, out decoder);
+
+    public new static bool IsValid(ushort identity) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).IsValid(identity);
 }
 
 internal readonly record struct ReservedRootPacket21(byte Payload) : IRootServerPacket<ReservedRootPacket21>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ReservedRootPacket21>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ReservedRootPacket21>();
 
     public int Size => sizeof(byte);
 

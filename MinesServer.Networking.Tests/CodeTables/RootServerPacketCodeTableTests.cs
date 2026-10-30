@@ -24,7 +24,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// Таблицы живут здесь, а не в репозитории сервера: пока они были там, протокол
 /// можно было сломать здесь, и падал бы сервер.
 /// </summary>
-internal class RootServerPacketCodeTableTests
+internal sealed class RootServerPacketCodeTableTests
 {
     [Test]
     public void ServerPacketCodes_MatchRegistrationOrder()

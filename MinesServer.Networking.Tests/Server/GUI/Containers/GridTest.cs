@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 namespace MinesServer.Networking.Tests.Server.GUI.Containers;
 
-internal class GridTest : PacketTest<GridPacket>
+internal sealed class GridTest : PacketTest<GridPacket>
 {
     public override GridPacket Packet => new() {
         Columns = [1, 2, 3],

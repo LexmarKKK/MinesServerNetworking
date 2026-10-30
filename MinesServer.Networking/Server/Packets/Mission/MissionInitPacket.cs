@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Mission;
 
 public readonly record struct MissionInitPacket(string ImageURI, ushort Width, ushort Height, string Title, string Description) : IRootServerPacket<MissionInitPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<MissionInitPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<MissionInitPacket>();
 
     public int Size =>
         sizeof(ushort) + // ImageURI.Length

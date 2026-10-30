@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct RemoveBuildingPacket(ushort X, ushort Y) : IHBPacket<RemoveBuildingPacket>
 {
-    public byte PacketCode => HBPacketCodeProvider.Cache<RemoveBuildingPacket>.Code;
+    public byte PacketCode => HBPacketCodeProvider.GetPacketCode<RemoveBuildingPacket>();
 
     public int Size => Unsafe.SizeOf<RemoveBuildingPacket>();
 

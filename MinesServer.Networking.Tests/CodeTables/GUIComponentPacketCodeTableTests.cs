@@ -12,7 +12,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// Адресует отрисовку всех серверных окон целиком, и перестановка Register не даёт
 /// исключения — окно просто рисуется не теми элементами.
 /// </summary>
-internal class GUIComponentPacketCodeTableTests
+internal sealed class GUIComponentPacketCodeTableTests
 {
     [Test]
     public void GUIComponentCodes_MatchRegistrationOrder()

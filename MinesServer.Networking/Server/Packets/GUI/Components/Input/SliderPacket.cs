@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
+using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 using MinesServer.Utils;
 using System;
 
@@ -6,10 +6,10 @@ namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
 
 public record class SliderPacket : InputComponentPacket<float>, IGUIComponentPacket<SliderPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<SliderPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<SliderPacket>();
 
-    public override float DefaultValue { get; init; } = 0;
-    public float MinValue { get; init; } = 0;
+    public override float DefaultValue { get; init; }
+    public float MinValue { get; init; }
     public float MaxValue { get; init; } = 100;
     public float Step { get; init; } = 1f;
     public ImagePacket Knob { get; init; } = new() { URI = "gui/slider/knob.png" };

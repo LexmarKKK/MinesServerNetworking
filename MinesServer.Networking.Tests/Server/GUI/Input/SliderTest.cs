@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Input;
 
-internal class SliderTest : PacketTest<SliderPacket>
+internal sealed class SliderTest : PacketTest<SliderPacket>
 {
     public override SliderPacket Packet => new() {
         DefaultValue = 23,

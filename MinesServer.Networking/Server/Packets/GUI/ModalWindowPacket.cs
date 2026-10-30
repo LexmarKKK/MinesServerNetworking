@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI;
 
 public readonly record struct ModalWindowPacket(string Title, string Description, string ButtonText, string IconURI) : IRootServerPacket<ModalWindowPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ModalWindowPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ModalWindowPacket>();
 
     public readonly int Size =>
         sizeof(byte) + // Title.Length

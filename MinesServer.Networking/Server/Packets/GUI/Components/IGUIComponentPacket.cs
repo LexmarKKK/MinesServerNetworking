@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Shared.Packets;
+using MinesServer.Networking.Contracts.Packets;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components;
 

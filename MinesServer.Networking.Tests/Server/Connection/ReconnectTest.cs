@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Connection;
 
-internal class ReconnectTest : RootServerPacketTest<ReconnectPacket>
+internal sealed class ReconnectTest : RootServerPacketTest<ReconnectPacket>
 {
     public override ReconnectPacket Packet => new("Server is restarting. Please reconnect.");
 }

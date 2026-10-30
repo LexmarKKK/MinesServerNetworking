@@ -1,4 +1,4 @@
-﻿namespace MinesServer.Networking.Shared.Packets;
+namespace MinesServer.Networking.Contracts.Packets;
 
 public interface IKeyValuePairPacket<TKey, TValue> : INetworkPacketBase
 {

@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Connection;
 
-internal class OutdatedClientTest : RootServerPacketTest<OutdatedClientPacket>
+internal sealed class OutdatedClientTest : RootServerPacketTest<OutdatedClientPacket>
 {
     public override OutdatedClientPacket Packet => new(
     101,

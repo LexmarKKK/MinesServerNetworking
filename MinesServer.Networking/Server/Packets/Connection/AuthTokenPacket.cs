@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Connection;
 
 public readonly record struct AuthTokenPacket(string Token) : IRootServerPacket<AuthTokenPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<AuthTokenPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<AuthTokenPacket>();
 
     public int Size => Token.Length; // Token
 

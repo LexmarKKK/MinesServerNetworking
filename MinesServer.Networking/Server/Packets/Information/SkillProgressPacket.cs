@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct SkillProgressPacket(SkillType Skill, long Current, long Max) : IRootServerPacket<SkillProgressPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<SkillProgressPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<SkillProgressPacket>();
 
     public readonly int Size => Unsafe.SizeOf<SkillProgressPacket>();
 

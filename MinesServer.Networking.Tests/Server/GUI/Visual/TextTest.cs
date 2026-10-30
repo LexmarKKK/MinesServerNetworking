@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Visual;
 
-internal class TextTest : PacketTest<TextPacket>
+internal sealed class TextTest : PacketTest<TextPacket>
 {
     public override TextPacket Packet => new() { Text = "asdsa фывыф" };
 }

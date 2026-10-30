@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Chat;
 
 public readonly record struct ChatMutePacket(long Timestamp, long EndsAt, string Reason, int ModeratorId, string ModeratorName) : IRootServerPacket<ChatMutePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ChatMutePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ChatMutePacket>();
 
     public int Size =>
         sizeof(long) + // Timestamp

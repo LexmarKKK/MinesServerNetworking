@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Exceptions;
 using MinesServer.Utils;
 using System;
 
@@ -6,7 +6,7 @@ namespace MinesServer.Networking.Client.Packets.Actions;
 
 public readonly record struct ActionClientPacket(ushort X, ushort Y, IActionClientPacket Payload) : IRootClientPacket<ActionClientPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<ActionClientPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<ActionClientPacket>();
 
     public int Size => 
         sizeof(ushort) +  // X

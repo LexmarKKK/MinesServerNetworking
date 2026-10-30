@@ -1,13 +1,14 @@
-﻿using MinesServer.Utils;
+#nullable enable
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
 
 public record class IntDropdownPacket : DropdownComponentPacket<int>, IGUIComponentPacket<IntDropdownPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<IntDropdownPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<IntDropdownPacket>();
 
-    public override int DefaultValue { get; init; } = 0;
+    public override int DefaultValue { get; init; }
     public override int[] Values { get; init; } = new[] { 0 };
 
     public override int Size => base.Size +
@@ -39,4 +40,6 @@ public record class IntDropdownPacket : DropdownComponentPacket<int>, IGUICompon
     public IntDropdownPacket() { }
 
     public virtual bool Equals(IntDropdownPacket? other) => base.Equals(other);
+    public override int GetHashCode() => base.GetHashCode();
+
 }

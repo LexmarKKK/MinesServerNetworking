@@ -43,7 +43,7 @@ public enum ItemType : byte
     Trans,
     Compressor,
     C190,
-    FED,
+    FedBase,
     GeoBlackRock,
     GeoRedRock,
     Auto,

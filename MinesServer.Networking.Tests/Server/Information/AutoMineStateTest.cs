@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class AutoMineStateTest : RootServerPacketTest<AutoMineStatePacket>
+internal sealed class AutoMineStateTest : RootServerPacketTest<AutoMineStatePacket>
 {
     public override AutoMineStatePacket Packet => new(false);
 }

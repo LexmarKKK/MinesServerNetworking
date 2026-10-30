@@ -1,10 +1,10 @@
-﻿using MinesServer.Networking.Server.Packets.World;
+using MinesServer.Networking.Server.Packets.World;
 
 namespace MinesServer.Networking.Tests.Server.World;
 
-internal class VFXPacketTest : PacketTest<VFXPacket>
+internal sealed class VisualPacketTest : PacketTest<VisualPacket>
 {
-    public override VFXPacket Packet => new(
+    public override VisualPacket Packet => new(
         Data.VFX.C190,
         572,
         19,

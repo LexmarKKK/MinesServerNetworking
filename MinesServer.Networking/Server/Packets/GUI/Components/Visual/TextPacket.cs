@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 public record class TextPacket : GUIComponentPacket, IGUIComponentPacket<TextPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<TextPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<TextPacket>();
 
     public string Text { get; init; } = "";
 

@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Linq;
 
@@ -6,7 +6,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 
 public readonly record struct BasketPacket(uint Capacity, long[] Contents) : IRootServerPacket<BasketPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<BasketPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<BasketPacket>();
 
     public int Size =>
         sizeof(uint) + // Capacity
@@ -29,4 +29,13 @@ public readonly record struct BasketPacket(uint Capacity, long[] Contents) : IRo
     public bool Equals(BasketPacket other) =>
         Capacity == other.Capacity &&
         Contents.SequenceEqual(other.Contents);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Capacity);
+        foreach (var item in Contents)
+            hash.Add(item);
+        return hash.ToHashCode();
+    }
+
 }

@@ -15,7 +15,7 @@ namespace MinesServer.Networking.Tests.Server.Compression;
 /// Round-trip с мусорным хвостом проходил (декодер хвост игнорирует), поэтому
 /// нужен прямой тест на заголовок.
 /// </summary>
-internal class CompressionWrapperTests
+internal sealed class CompressionWrapperTests
 {
     private static OpenWindowPacket Payload(string text) => new("TestWindow", 50, 50, new DockPanelPacket
     {
@@ -86,9 +86,9 @@ internal class CompressionWrapperTests
     {
         var packet = new LZ4Packet(Payload("round trip payload"));
         var buffer = new byte[packet.Size];
-        packet.Encode(buffer);
+        int written = packet.Encode(buffer);
 
-        var decoded = LZ4Packet.Decode(buffer);
+        var decoded = LZ4Packet.Decode(buffer.AsSpan(0, written));
         Assert.That(decoded.Payload, Is.EqualTo(packet.Payload));
     }
 
@@ -97,9 +97,9 @@ internal class CompressionWrapperTests
     {
         var packet = new LzmaPacket(Payload("round trip payload"));
         var buffer = new byte[packet.Size];
-        packet.Encode(buffer);
+        int written = packet.Encode(buffer);
 
-        var decoded = LzmaPacket.Decode(buffer);
+        var decoded = LzmaPacket.Decode(buffer.AsSpan(0, written));
         Assert.That(decoded.Payload, Is.EqualTo(packet.Payload));
     }
 

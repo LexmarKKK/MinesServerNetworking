@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class HealthTest : RootServerPacketTest<HealthPacket>
+internal sealed class HealthTest : RootServerPacketTest<HealthPacket>
 {
     public override HealthPacket Packet => new(95, 120);
 }

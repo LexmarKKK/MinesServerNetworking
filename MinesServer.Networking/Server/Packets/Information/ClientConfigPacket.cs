@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Shared.Packets;
+using MinesServer.Networking.Contracts.Packets;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 
 public readonly record struct ClientConfigPacket(IReadOnlyList<StringPairPacket> Keybinds, IReadOnlyList<string> UnrenderedTextures) : IRootServerPacket<ClientConfigPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ClientConfigPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ClientConfigPacket>();
 
     public int Size =>
         sizeof(byte) + // Keybinds.Length
@@ -45,4 +45,14 @@ public readonly record struct ClientConfigPacket(IReadOnlyList<StringPairPacket>
     public bool Equals(ClientConfigPacket other) =>
         Keybinds.SequenceEqual(other.Keybinds) &&
         UnrenderedTextures.SequenceEqual(other.UnrenderedTextures);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        foreach (var keybind in Keybinds)
+            hash.Add(keybind);
+        foreach (var texture in UnrenderedTextures)
+            hash.Add(texture);
+        return hash.ToHashCode();
+    }
+
 }

@@ -1,8 +1,8 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
 
-namespace MinesServer.Networking.Shared.Packets;
+namespace MinesServer.Networking.Contracts.Packets;
 
 public readonly record struct StringPairPacket(string Key, string Value) : INetworkPacket<StringPairPacket>, IKeyValuePairPacket<string, string>
 {

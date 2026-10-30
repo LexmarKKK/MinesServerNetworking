@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -29,9 +30,9 @@ namespace MinesServer.Utils
 
         public static implicit operator char(bchar c) => (char)c.val;
 
-        public int CompareTo(object? value)
+        public int CompareTo(object? obj)
         {
-            return value switch
+            return obj switch
             {
                 null => 1,
                 char c => this - c,
@@ -76,9 +77,9 @@ namespace MinesServer.Utils
 
         byte IConvertible.ToByte(IFormatProvider? provider) => val;
 
-        public int CompareTo(bchar value) => val - value.val;
+        public int CompareTo(bchar obj) => val - obj.val;
 
-        public int CompareTo(char value) => this - value;
+        public int CompareTo(char obj) => this - obj;
 
         public override bool Equals(object? obj) => (obj is char c && this == c) || (obj is bchar b && this == b);
 

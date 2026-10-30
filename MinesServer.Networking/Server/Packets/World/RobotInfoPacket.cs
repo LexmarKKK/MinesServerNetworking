@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct RobotInfoPacket(ushort BotId, int PlayerId, byte ClanId, string Skin, string Tail, string Name) : IRootServerPacket<RobotInfoPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<RobotInfoPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<RobotInfoPacket>();
 
     public int Size =>
         sizeof(ushort) + // BotId

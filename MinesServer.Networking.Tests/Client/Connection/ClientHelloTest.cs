@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.Connection;
 
-internal class ClientHelloTest : RootClientPacketTest<ClientHelloPacket>
+internal sealed class ClientHelloTest : RootClientPacketTest<ClientHelloPacket>
 {
     public override ClientHelloPacket Packet => new(
         321,

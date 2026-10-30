@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Utilities;
 
 public readonly record struct OpenURLPacket(string URL) : IRootServerPacket<OpenURLPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<OpenURLPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<OpenURLPacket>();
 
     public int Size =>
         URL.Length; // URL

@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.GUI.Visual;
 
-internal class LineTest : PacketTest<LinePacket>
+internal sealed class LineTest : PacketTest<LinePacket>
 {
     public override LinePacket Packet => new() {
         Direction = LineDirection.ReverseDiagonal,

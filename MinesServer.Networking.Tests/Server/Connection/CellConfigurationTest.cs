@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.Connection;
 
 namespace MinesServer.Networking.Tests.Server.Connection;
 
-internal class CellConfigurationTest : PacketTest<CellConfigurationPacket>
+internal sealed class CellConfigurationTest : PacketTest<CellConfigurationPacket>
 {
     public override CellConfigurationPacket Packet => new(
         Passable: true,
@@ -21,9 +21,12 @@ internal class CellConfigurationTest : PacketTest<CellConfigurationPacket>
     public void WireLayoutMatchesProtocolContract()
     {
         var packet = Packet;
-        Assert.That(packet.Size, Is.EqualTo(16 + "Cells/Rock.png".Length + "terrain-decals-rock.png".Length));
-        var bytes = new byte[packet.Size];
-        Assert.That(packet.Encode(bytes), Is.EqualTo(packet.Size));
-        Assert.That(CellConfigurationPacket.Decode(bytes), Is.EqualTo(packet));
+        Assert.Multiple(() =>
+        {
+            Assert.That(packet.Size, Is.EqualTo(16 + "Cells/Rock.png".Length + "terrain-decals-rock.png".Length));
+            var bytes = new byte[packet.Size];
+            Assert.That(packet.Encode(bytes), Is.EqualTo(packet.Size));
+            Assert.That(CellConfigurationPacket.Decode(bytes), Is.EqualTo(packet));
+        });
     }
 }

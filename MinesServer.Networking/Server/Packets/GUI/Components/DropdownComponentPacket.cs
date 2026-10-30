@@ -1,4 +1,5 @@
-﻿using MinesServer.Utils;
+﻿#nullable enable
+using MinesServer.Utils;
 using System.Linq;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components;
@@ -14,4 +15,13 @@ public abstract record class DropdownComponentPacket<TValue> : InputComponentPac
     public virtual bool Equals(DropdownComponentPacket<TValue>? other) =>
         base.Equals(other) &&
         Values.SequenceEqual(other.Values);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(base.GetHashCode());
+        foreach (var value in Values)
+            hash.Add(value);
+        return hash.ToHashCode();
+    }
+
 }
