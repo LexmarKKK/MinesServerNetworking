@@ -67,6 +67,7 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
         WindowTag == other.WindowTag &&
         ElementIndex == other.ElementIndex &&
         Context.SequenceEqual(other.Context);
+
     public override int GetHashCode()
     {
         var hash = new System.HashCode();

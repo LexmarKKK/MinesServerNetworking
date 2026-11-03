@@ -2,6 +2,10 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+#if NET7_0_OR_GREATER
+using System.Buffers;
+using System.Text.Unicode;
+#endif
 
 namespace MinesServer.Utils
 {
@@ -441,7 +445,20 @@ namespace MinesServer.Utils
         {
             int maxByteCount = s_strictUtf8.GetMaxByteCount(value.Length);
             Span<byte> destination = Remaining.Slice(offset, maxByteCount);
+#if NET7_0_OR_GREATER
+            OperationStatus status = Utf8.FromUtf16(
+                value.AsSpan(),
+                destination,
+                out int charsRead,
+                out bytesWritten,
+                replaceInvalidSequences: false);
+            if (status != OperationStatus.Done || charsRead != value.Length)
+            {
+                throw new EncoderFallbackException("The input contains invalid UTF-16 data.");
+            }
+#else
             bytesWritten = s_strictUtf8.GetBytes(value.AsSpan(), destination);
+#endif
         }
 
         #endregion

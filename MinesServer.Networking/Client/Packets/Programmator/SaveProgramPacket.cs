@@ -48,6 +48,7 @@ public readonly record struct SaveProgramPacket(int ProgramId, bool SaveAndRun, 
         SaveAndRun == other.SaveAndRun &&
         Program.SequenceEqual(other.Program) &&
         Breakpoints.SequenceEqual(other.Breakpoints);
+
     public override int GetHashCode()
     {
         var hash = new System.HashCode();

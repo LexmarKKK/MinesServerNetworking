@@ -39,6 +39,7 @@ public readonly record struct QueryProgramMemoryPacket(IReadOnlyList<string> Var
         ArrayStart == other.ArrayStart &&
         ArrayStop == other.ArrayStop &&
         Variables.SequenceEqual(other.Variables);
+
     public override int GetHashCode()
     {
         var hash = new System.HashCode();

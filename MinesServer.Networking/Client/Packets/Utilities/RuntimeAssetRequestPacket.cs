@@ -33,6 +33,7 @@ namespace MinesServer.Networking.Client.Packets.Utilities
         }
 
         public bool Equals(RuntimeAssetRequestPacket other) => Assets.SequenceEqual(other.Assets);
+
         public override int GetHashCode()
         {
             var hash = new System.HashCode();
