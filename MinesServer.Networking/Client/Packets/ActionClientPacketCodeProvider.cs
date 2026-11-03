@@ -1,15 +1,12 @@
 #nullable enable
 using MinesServer.Networking.Client.Packets.Actions;
 using MinesServer.Networking.Client.Packets.Movement;
-using System.Diagnostics.CodeAnalysis;
 
 namespace MinesServer.Networking.Client.Packets;
 
-public sealed class ActionClientPacketCodeProvider : NetworkPacketCodeProvider<IActionClientPacket, byte>
+public sealed class ActionClientPacketCodeProvider : NetworkPacketCodeProvider<IActionClientPacket, byte, ActionClientPacketCodeProvider>
 {
-    private static readonly ActionClientPacketCodeProvider _instance = new();
-
-    private ActionClientPacketCodeProvider()
+    static ActionClientPacketCodeProvider()
     {
         Register<BuildCyanPacket>();
         Register<BuildGrayPacket>();
@@ -25,15 +22,4 @@ public sealed class ActionClientPacketCodeProvider : NetworkPacketCodeProvider<I
         Register<MovePacket>();
         Register<RotatePacket>();
     }
-
-    public new static byte GetPacketCode<TPacket>() where TPacket : IActionClientPacket => ((NetworkPacketCodeProvider<IActionClientPacket, byte>)_instance).GetPacketCode<TPacket>();
-
-    public new static byte GetPacketCode(IActionClientPacket packet) => ((NetworkPacketCodeProvider<IActionClientPacket, byte>)_instance).GetPacketCode(packet);
-
-    public new static NetworkPacketDecoder<IActionClientPacket> GetDecoder(byte identity) => ((NetworkPacketCodeProvider<IActionClientPacket, byte>)_instance).GetDecoder(identity);
-
-    public new static bool TryGetDecoder(byte identity, [NotNullWhen(true)] out NetworkPacketDecoder<IActionClientPacket>? decoder) =>
-        ((NetworkPacketCodeProvider<IActionClientPacket, byte>)_instance).TryGetDecoder(identity, out decoder);
-
-    public new static bool IsValid(byte identity) => ((NetworkPacketCodeProvider<IActionClientPacket, byte>)_instance).IsValid(identity);
 }

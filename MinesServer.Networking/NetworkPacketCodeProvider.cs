@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 #if NET9_0_OR_GREATER
 using System.Numerics;
 #endif
 #if !NET9_0_OR_GREATER
+using System.Globalization;
 using System.Linq.Expressions;
 #endif
 
@@ -14,19 +14,25 @@ namespace MinesServer.Networking;
 
 public delegate TPacketType NetworkPacketDecoder<TPacketType>(ReadOnlySpan<byte> input);
 
-public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
+public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity, TSelf>
     where TPacketType : class, INetworkPacketBase
 #if NET9_0_OR_GREATER
     where TIdentity : unmanaged, IBinaryInteger<TIdentity>
 #else
     where TIdentity : unmanaged, IConvertible
 #endif
+    where TSelf : NetworkPacketCodeProvider<TPacketType, TIdentity, TSelf>, new()
 {
-    private readonly Dictionary<Type, TIdentity> _packetsMapping = new();
-    private readonly List<NetworkPacketDecoder<TPacketType>> _decoders = new();
-    private int _nextIdentity;
+    private static readonly Dictionary<Type, TIdentity> _packetsMapping = new();
+    private static readonly List<NetworkPacketDecoder<TPacketType>> _decoders = new();
+    private static int _nextIdentity;
 
-    protected void Register<TPacket>() where TPacket : INetworkPacket<TPacket>, TPacketType
+    static NetworkPacketCodeProvider()
+    {
+        _ = new TSelf();
+    }
+
+    protected static void Register<TPacket>() where TPacket : INetworkPacket<TPacket>, TPacketType
     {
 #if NET9_0_OR_GREATER
         TIdentity identity = TIdentity.CreateChecked(_nextIdentity);
@@ -42,6 +48,7 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
         NetworkPacketDecoder<TPacketType> decoder = input => TPacket.Decode(input);
 #else
         var parameter = Expression.Parameter(typeof(ReadOnlySpan<byte>), "input");
+        // Для NAOT/IL2CPP компиляция выражения автоматически переходит в интерпретируемую форму.
         NetworkPacketDecoder<TPacketType> decoder = Expression.Lambda<NetworkPacketDecoder<TPacketType>>(
             Expression.Convert(
                 Expression.Call(typeof(TPacket), "Decode", null, parameter),
@@ -52,14 +59,14 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
         _nextIdentity++;
     }
 
-    public TIdentity GetPacketCode(TPacketType packet) => _packetsMapping[packet.GetType()];
+    public static TIdentity GetPacketCode(TPacketType packet) => _packetsMapping[packet.GetType()];
 
-    public TIdentity GetPacketCode<TPacket>() where TPacket : TPacketType => _packetsMapping[typeof(TPacket)];
+    public static TIdentity GetPacketCode<TPacket>() where TPacket : TPacketType => Cache<TPacket>.Code;
 
-    public NetworkPacketDecoder<TPacketType> GetDecoder(TIdentity identity) =>
+    public static NetworkPacketDecoder<TPacketType> GetDecoder(TIdentity identity) =>
         _decoders[ToIndex(identity)];
 
-    public bool TryGetDecoder(
+    public static bool TryGetDecoder(
         TIdentity identity,
         [NotNullWhen(true)] out NetworkPacketDecoder<TPacketType>? decoder)
     {
@@ -74,10 +81,19 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
     /// Код 0 соответствует первому зарегистрированному пакету, а код,
     /// равный числу зарегистрированных пакетов или превышающий его, невалиден.
     /// </summary>
-    public bool IsValid(TIdentity identity)
+    public static bool IsValid(TIdentity identity)
     {
         int code = ToIndex(identity);
         return code >= 0 && code < _nextIdentity;
+    }
+
+    /// <summary>
+    /// Код пакета берётся из реестра один раз на тип, чтобы кодирование кадра
+    /// не обращалось к словарю на каждый пакет.
+    /// </summary>
+    public static class Cache<TPacket> where TPacket : TPacketType
+    {
+        public static TIdentity Code { get; } = _packetsMapping[typeof(TPacket)];
     }
 
     private static int ToIndex(TIdentity identity) =>

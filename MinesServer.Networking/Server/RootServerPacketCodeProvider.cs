@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Diagnostics.CodeAnalysis;
 using MinesServer.Networking.Server.Packets.Chat;
 using MinesServer.Networking.Server.Packets.Compression;
 using MinesServer.Networking.Server.Packets.Connection;
@@ -16,11 +15,9 @@ using MinesServer.Networking.Server.Packets.World;
 
 namespace MinesServer.Networking.Server;
 
-public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort>
+public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort, RootServerPacketCodeProvider>
 {
-    private static readonly RootServerPacketCodeProvider _instance = new();
-
-    private RootServerPacketCodeProvider()
+    static RootServerPacketCodeProvider()
     {
         Register<OutdatedClientPacket>();
         Register<TeleportPacket>();
@@ -72,17 +69,6 @@ public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRo
         Register<ChatListPacket>();
         Register<MovementSpeedPacket>();
     }
-
-    public new static ushort GetPacketCode<TPacket>() where TPacket : IRootServerPacket => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetPacketCode<TPacket>();
-
-    public new static ushort GetPacketCode(IRootServerPacket packet) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetPacketCode(packet);
-
-    public new static NetworkPacketDecoder<IRootServerPacket> GetDecoder(ushort identity) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).GetDecoder(identity);
-
-    public new static bool TryGetDecoder(ushort identity, [NotNullWhen(true)] out NetworkPacketDecoder<IRootServerPacket>? decoder) =>
-        ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).TryGetDecoder(identity, out decoder);
-
-    public new static bool IsValid(ushort identity) => ((NetworkPacketCodeProvider<IRootServerPacket, ushort>)_instance).IsValid(identity);
 }
 
 internal readonly record struct ReservedRootPacket21(byte Payload) : IRootServerPacket<ReservedRootPacket21>
