@@ -1,5 +1,6 @@
 #nullable enable
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 using System.Linq;
 
@@ -21,6 +22,18 @@ public record class StringDropdownPacket : DropdownComponentPacket<string>, IGUI
 
     public override int Encode(Span<byte> output)
     {
+        if (Values is null)
+        {
+            throw new ArgumentNullException(nameof(Values));
+        }
+
+        GUIProtocolValidation.U1Utf16(DefaultValue, nameof(DefaultValue));
+        GUIProtocolValidation.U1Count(Values.Length, nameof(Values));
+        foreach (string value in Values)
+        {
+            GUIProtocolValidation.U1Utf16(value, nameof(Values));
+        }
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedUtf16(DefaultValue);

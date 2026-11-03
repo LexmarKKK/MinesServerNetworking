@@ -1,6 +1,7 @@
 #nullable enable
 
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 using System.Linq;
 
@@ -21,6 +22,14 @@ public record class GridPacket : ContainerComponentPacket, IGUIComponentPacket<G
 
     public override int Encode(Span<byte> output)
     {
+        if (Columns is null || Rows is null)
+        {
+            throw new ArgumentNullException(Columns is null ? nameof(Columns) : nameof(Rows));
+        }
+
+        GUIProtocolValidation.U1Count(Columns.Length, nameof(Columns));
+        GUIProtocolValidation.U1Count(Rows.Length, nameof(Rows));
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedArray(Columns);

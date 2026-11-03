@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,20 @@ public abstract record class ContainerComponentPacket : GUIComponentPacket, ICon
 
     public override int Encode(Span<byte> output)
     {
+        if (Children is null)
+        {
+            throw new ArgumentNullException(nameof(Children));
+        }
+
+        GUIProtocolValidation.U2Count(Children.Count, nameof(Children));
+        foreach (IGUIComponentPacket child in Children)
+        {
+            if (child is null)
+            {
+                throw new ArgumentException("GUI container children cannot contain null.", nameof(Children));
+            }
+        }
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.Write((ushort)Children.Count);

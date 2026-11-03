@@ -32,6 +32,24 @@ public readonly record struct OpenWindowPacket(string WindowTag, ushort Width, u
 
     public int Encode(Span<byte> output)
     {
+        GUIProtocolValidation.U1Ascii(WindowTag, nameof(WindowTag));
+        if (string.IsNullOrEmpty(WindowTag))
+        {
+            throw new ArgumentException("WindowTag must be set.", nameof(WindowTag));
+        }
+        if (Width == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(Width));
+        }
+        if (Height == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(Height));
+        }
+        if (Content is null)
+        {
+            throw new ArgumentNullException(nameof(Content));
+        }
+
         var writer = output.Writer();
         writer.WriteU1PrefixedASCII(WindowTag);
         writer.Write(Width);

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components;
@@ -47,8 +48,12 @@ public abstract record class InputComponentPacket<TValue> : GUIComponentPacket, 
     /// </summary>
     private void EnsureNamed()
     {
-        if (Name is null)
+        if (string.IsNullOrEmpty(Name))
+        {
             throw new InvalidOperationException($"{GetType().Name}: Name must be set before encoding an input component.");
+        }
+
+        GUIProtocolValidation.U1Ascii(Name, nameof(Name));
     }
 
     protected InputComponentPacket(ref MemoryReader reader) : base(ref reader)

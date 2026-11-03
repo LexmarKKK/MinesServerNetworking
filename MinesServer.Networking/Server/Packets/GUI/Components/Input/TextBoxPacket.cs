@@ -1,4 +1,5 @@
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
@@ -19,6 +20,9 @@ public record class TextBoxPacket : InputComponentPacket<string>, IGUIComponentP
 
     public override int Encode(Span<byte> output)
     {
+        GUIProtocolValidation.U2Utf16(DefaultValue, nameof(DefaultValue));
+        GUIProtocolValidation.U1Utf16(Regex, nameof(Regex));
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU2PrefixedUtf16(DefaultValue);

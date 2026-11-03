@@ -1,4 +1,5 @@
 using MinesServer.Networking.Contracts.Packets;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,27 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
 
     public int Encode(Span<byte> output)
     {
+        if (Context is null)
+        {
+            throw new ArgumentNullException(nameof(Context));
+        }
+
+        GUIProtocolValidation.U1Ascii(WindowTag, nameof(WindowTag));
+        if (string.IsNullOrEmpty(WindowTag))
+        {
+            throw new ArgumentException("WindowTag must be set.", nameof(WindowTag));
+        }
+        if (ElementIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ElementIndex));
+        }
+
+        foreach (StringPairPacket value in Context)
+        {
+            GUIProtocolValidation.U1Ascii(value.Key, nameof(Context));
+            GUIProtocolValidation.U2Utf16(value.Value, nameof(Context));
+        }
+
         var writer = output.Writer();
         writer.WriteU1PrefixedASCII(WindowTag);
         writer.Write(ElementIndex);

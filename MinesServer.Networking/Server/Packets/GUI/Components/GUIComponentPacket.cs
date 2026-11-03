@@ -1,5 +1,6 @@
 #nullable enable
 using MinesServer.Networking.Contracts.Packets;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Linq;
@@ -24,6 +25,19 @@ public abstract record class GUIComponentPacket : IGUIComponentPacket
 
     public virtual int Encode(Span<byte> output)
     {
+        if (AttachedProperties is null)
+        {
+            throw new ArgumentNullException(nameof(AttachedProperties));
+        }
+
+        GUIProtocolValidation.U1Ascii(OnClickContext, nameof(OnClickContext));
+        GUIProtocolValidation.U1Count(AttachedProperties.Length, nameof(AttachedProperties));
+        foreach (StringPairPacket property in AttachedProperties)
+        {
+            GUIProtocolValidation.U1Ascii(property.Key, nameof(AttachedProperties));
+            GUIProtocolValidation.U2Utf16(property.Value, nameof(AttachedProperties));
+        }
+
         var writer = output.Writer();
         writer.Write(Style is not null);
         if(Style is not null)

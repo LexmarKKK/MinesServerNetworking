@@ -1,4 +1,5 @@
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Visual;
@@ -18,6 +19,8 @@ public record class ImagePacket : GUIComponentPacket, IGUIComponentPacket<ImageP
 
     public override int Encode(Span<byte> output)
     {
+        GUIProtocolValidation.U2Ascii(URI, nameof(URI));
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU2PrefixedASCII(URI);

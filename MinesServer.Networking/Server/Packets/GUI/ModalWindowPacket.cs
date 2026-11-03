@@ -18,6 +18,11 @@ public readonly record struct ModalWindowPacket(string Title, string Description
 
     public int Encode(Span<byte> output)
     {
+        GUIProtocolValidation.U1Utf16(Title, nameof(Title));
+        GUIProtocolValidation.U2Utf16(Description, nameof(Description));
+        GUIProtocolValidation.U1Utf16(ButtonText, nameof(ButtonText));
+        GUIProtocolValidation.Ascii(IconURI, nameof(IconURI));
+
         var writer = output.Writer();
         writer.WriteU1PrefixedUtf16(Title);
         writer.WriteU2PrefixedUtf16(Description);

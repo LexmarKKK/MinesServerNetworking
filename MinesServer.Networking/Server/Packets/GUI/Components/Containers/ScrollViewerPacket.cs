@@ -1,4 +1,5 @@
 using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Containers;
@@ -19,6 +20,13 @@ public record class ScrollViewerPacket : ContainerComponentPacket, IGUIComponent
 
     public override int Encode(Span<byte> output)
     {
+        GUIProtocolValidation.U1Ascii(Name, nameof(Name));
+        if (!Enum.IsDefined(typeof(ScrollbarVisibility), HorizontalScrollBar) ||
+            !Enum.IsDefined(typeof(ScrollbarVisibility), VerticalScrollBar))
+        {
+            throw new ArgumentOutOfRangeException(nameof(HorizontalScrollBar), "Scrollbar visibility is invalid.");
+        }
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedASCII(Name);
