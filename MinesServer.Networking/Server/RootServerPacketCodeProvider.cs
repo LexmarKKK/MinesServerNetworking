@@ -52,7 +52,6 @@ public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRo
         Register<ClearStatusLinePacket>();
         Register<ClearStatusPacket>();
         Register<SkillProgressPacket>();
-        Register<DailyBonusStatePacket>();
         Register<MissionInitPacket>();
         Register<LocalChatMessagePacket>();
         Register<ModalWindowPacket>();

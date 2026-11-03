@@ -5,7 +5,7 @@ namespace MinesServer.Networking.Tests.Server.World;
 internal sealed class VisualPacketTest : PacketTest<VisualPacket>
 {
     public override VisualPacket Packet => new(
-        Data.VFX.C190,
+        Data.VisualEffect.C190,
         572,
         19,
         57,

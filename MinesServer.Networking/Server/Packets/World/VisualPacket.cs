@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
-public readonly record struct VisualPacket(VFX EffectType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<VisualPacket>
+public readonly record struct VisualPacket(VisualEffect EffectType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<VisualPacket>
 {
     public byte PacketCode => HBPacketCodeProvider.GetPacketCode<VisualPacket>();
 
     public int Size =>
-        sizeof(VFX) + // EffectType
+        sizeof(VisualEffect) + // EffectType
         sizeof(ushort) + // TargetBotId
         sizeof(ushort) + // X
         sizeof(ushort) + // Y
@@ -35,7 +35,7 @@ public readonly record struct VisualPacket(VFX EffectType, ushort TargetBotId, u
     public static VisualPacket Decode(ReadOnlySpan<byte> input)
     {
         var reader = input.Reader();
-        var effect = reader.Read<VFX>();
+        var effect = reader.Read<VisualEffect>();
         var botid = reader.ReadU2();
         var x = reader.ReadU2();
         var y = reader.ReadU2();

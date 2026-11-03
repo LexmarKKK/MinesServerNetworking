@@ -5,7 +5,7 @@ namespace MinesServer.Networking.Tests.Server.World;
 internal sealed class AudioPacketTest : PacketTest<AudioPacket>
 {
     public override AudioPacket Packet => new(
-        Data.SFX.Boom,
+        Data.AudioEventType.Boom,
         303,
         50,
         60,

@@ -14,12 +14,14 @@ public readonly record struct CellConfigurationPacket(
     CellAnimationType AnimationType,
     byte AnimationPalette,
     float FrameAnimationSpeed,
-    int MapColor) : IServerPacket<CellConfigurationPacket>
+    int MapColor,
+    bool Emission = false,
+    CellTextureAnchorKind TextureAnchor = CellTextureAnchorKind.Cell) : IServerPacket<CellConfigurationPacket>
 {
     private string SafeTextureName => TextureName ?? string.Empty;
     private string SafeDecalTextureName => DecalTextureName ?? string.Empty;
 
-    public int Size => sizeof(byte) * 8 + sizeof(float) + sizeof(int) + SafeTextureName.Length + SafeDecalTextureName.Length;
+    public int Size => sizeof(byte) * 10 + sizeof(float) + sizeof(int) + SafeTextureName.Length + SafeDecalTextureName.Length;
 
     public int Encode(Span<byte> output)
     {
@@ -41,6 +43,8 @@ public readonly record struct CellConfigurationPacket(
         writer.Write(AnimationPalette);
         writer.Write(FrameAnimationSpeed);
         writer.Write(MapColor);
+        writer.Write((byte)(Emission ? 1 : 0));
+        writer.Write((byte)TextureAnchor);
         return writer.Position;
     }
 
@@ -59,7 +63,9 @@ public readonly record struct CellConfigurationPacket(
             AnimationType: (CellAnimationType)reader.ReadU1(),
             AnimationPalette: reader.ReadU1(),
             FrameAnimationSpeed: reader.Read<float>(),
-            MapColor: reader.Read4());
+            MapColor: reader.Read4(),
+            Emission: reader.ReadU1() != 0,
+            TextureAnchor: (CellTextureAnchorKind)reader.ReadU1());
         bytesRead = reader.Position;
         return packet;
     }

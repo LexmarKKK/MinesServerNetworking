@@ -48,6 +48,7 @@ public sealed class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRo
         // последовательно, вставка в середину сдвигает коды всех последующих пакетов.
         Register<OpenChatListPacket>();
         Register<ChatMessageClickPacket>();
+        Register<ClientReadyPacket>();
     }
 
     public new static byte GetPacketCode<TPacket>() where TPacket : IRootClientPacket => ((NetworkPacketCodeProvider<IRootClientPacket, byte>)_instance).GetPacketCode<TPacket>();

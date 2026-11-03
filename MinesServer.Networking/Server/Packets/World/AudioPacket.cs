@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
-public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<AudioPacket>
+public readonly record struct AudioPacket(AudioEventType EventType, ushort TargetBotId, ushort X, ushort Y, IReadOnlyList<StringPairPacket> Parameters) : IHBPacket<AudioPacket>
 {
     public byte PacketCode => HBPacketCodeProvider.GetPacketCode<AudioPacket>();
 
     public int Size =>
-        sizeof(SFX) + // EffectType
+        sizeof(AudioEventType) + // EventType
         sizeof(ushort) + // TargetBotId
         sizeof(ushort) + // X
         sizeof(ushort) + // Y
@@ -22,7 +22,7 @@ public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, us
     public int Encode(Span<byte> output)
     {
         var writer = output.Writer();
-        writer.Write(EffectType);
+        writer.Write(EventType);
         writer.Write(TargetBotId);
         writer.Write(X);
         writer.Write(Y);
@@ -35,7 +35,7 @@ public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, us
     public static AudioPacket Decode(ReadOnlySpan<byte> input)
     {
         var reader = input.Reader();
-        var effect = reader.Read<SFX>();
+        var eventType = reader.Read<AudioEventType>();
         var botid = reader.ReadU2();
         var x = reader.ReadU2();
         var y = reader.ReadU2();
@@ -46,11 +46,11 @@ public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, us
             reader.Advance(item.Size);
             parameters[i] = item;
         }
-        return new(effect, botid, x, y, parameters);
+        return new(eventType, botid, x, y, parameters);
     }
 
     public bool Equals(AudioPacket other) =>
-        EffectType == other.EffectType &&
+        EventType == other.EventType &&
         TargetBotId == other.TargetBotId &&
         X == other.X &&
         Y == other.Y &&
@@ -58,7 +58,7 @@ public readonly record struct AudioPacket(SFX EffectType, ushort TargetBotId, us
     public override int GetHashCode()
     {
         var hash = new System.HashCode();
-        hash.Add(EffectType);
+        hash.Add(EventType);
         hash.Add(TargetBotId);
         hash.Add(X);
         hash.Add(Y);

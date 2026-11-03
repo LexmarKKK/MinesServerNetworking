@@ -9,13 +9,15 @@ internal sealed class CellConfigurationTest : PacketTest<CellConfigurationPacket
         Passable: true,
         DrawLayer: CellRenderLayer.Foreground,
         Outline: CellOutlineKind.Wavy,
-        TextureName: "Cells/Rock.png",
-        DecalTextureName: "terrain-decals-rock.png",
+        TextureName: "Visual/Cells/Rock.png",
+        DecalTextureName: "Visual/World/Terrain/Decals/terrain-decals-rock.png",
         ReliefGroup: 2,
         AnimationType: CellAnimationType.Prismatic,
         AnimationPalette: 2,
         FrameAnimationSpeed: 6f,
-        MapColor: unchecked((int)0xFF112233));
+        MapColor: unchecked((int)0xFF112233),
+        Emission: true,
+        TextureAnchor: CellTextureAnchorKind.World);
 
     [Test]
     public void WireLayoutMatchesProtocolContract()
@@ -23,7 +25,7 @@ internal sealed class CellConfigurationTest : PacketTest<CellConfigurationPacket
         var packet = Packet;
         Assert.Multiple(() =>
         {
-            Assert.That(packet.Size, Is.EqualTo(16 + "Cells/Rock.png".Length + "terrain-decals-rock.png".Length));
+            Assert.That(packet.Size, Is.EqualTo(18 + "Visual/Cells/Rock.png".Length + "Visual/World/Terrain/Decals/terrain-decals-rock.png".Length));
             var bytes = new byte[packet.Size];
             Assert.That(packet.Encode(bytes), Is.EqualTo(packet.Size));
             Assert.That(CellConfigurationPacket.Decode(bytes), Is.EqualTo(packet));
