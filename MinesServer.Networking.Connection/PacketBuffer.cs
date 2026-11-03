@@ -23,6 +23,9 @@ public class PacketBuffer
     private readonly int _maxLength;
     private const int ShrinkFactor = 4;
 
+    /// <summary>Unconsumed bytes, available to the thread that owns this buffer.</summary>
+    public ReadOnlySpan<byte> BufferedData => _buffer.AsSpan(_readPos, _writePos - _readPos);
+
     public PacketBuffer(int initialCapacity = DefaultInitialCapacity, int maxLength = DefaultMaxLength)
     {
         _initialCapacity = initialCapacity;

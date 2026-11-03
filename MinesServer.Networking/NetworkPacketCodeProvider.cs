@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+#if NET9_0_OR_GREATER
+using System.Numerics;
+#endif
 #if !NET9_0_OR_GREATER
 using System.Linq.Expressions;
 #endif
@@ -13,7 +16,11 @@ public delegate TPacketType NetworkPacketDecoder<TPacketType>(ReadOnlySpan<byte>
 
 public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
     where TPacketType : class, INetworkPacketBase
+#if NET9_0_OR_GREATER
+    where TIdentity : unmanaged, IBinaryInteger<TIdentity>
+#else
     where TIdentity : unmanaged, IConvertible
+#endif
 {
     private readonly Dictionary<Type, TIdentity> _packetsMapping = new();
     private readonly List<NetworkPacketDecoder<TPacketType>> _decoders = new();
@@ -21,10 +28,14 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
 
     protected void Register<TPacket>() where TPacket : INetworkPacket<TPacket>, TPacketType
     {
+#if NET9_0_OR_GREATER
+        TIdentity identity = TIdentity.CreateChecked(_nextIdentity);
+#else
         var identity = (TIdentity)Convert.ChangeType(
             _nextIdentity,
             typeof(TIdentity),
             CultureInfo.InvariantCulture);
+#endif
         _packetsMapping.Add(typeof(TPacket), identity);
 
 #if NET9_0_OR_GREATER
@@ -46,7 +57,7 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
     public TIdentity GetPacketCode<TPacket>() where TPacket : TPacketType => _packetsMapping[typeof(TPacket)];
 
     public NetworkPacketDecoder<TPacketType> GetDecoder(TIdentity identity) =>
-        _decoders[Convert.ToInt32(identity, CultureInfo.InvariantCulture)];
+        _decoders[ToIndex(identity)];
 
     public bool TryGetDecoder(
         TIdentity identity,
@@ -65,7 +76,14 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
     /// </summary>
     public bool IsValid(TIdentity identity)
     {
-        int code = Convert.ToInt32(identity, CultureInfo.InvariantCulture);
+        int code = ToIndex(identity);
         return code >= 0 && code < _nextIdentity;
     }
+
+    private static int ToIndex(TIdentity identity) =>
+#if NET9_0_OR_GREATER
+        int.CreateChecked(identity);
+#else
+        Convert.ToInt32(identity, CultureInfo.InvariantCulture);
+#endif
 }
