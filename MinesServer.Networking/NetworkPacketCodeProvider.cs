@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+#if !NET9_0_OR_GREATER
 using System.Linq.Expressions;
+#endif
 
 namespace MinesServer.Networking;
 
@@ -25,12 +27,16 @@ public abstract class NetworkPacketCodeProvider<TPacketType, TIdentity>
             CultureInfo.InvariantCulture);
         _packetsMapping.Add(typeof(TPacket), identity);
 
+#if NET9_0_OR_GREATER
+        NetworkPacketDecoder<TPacketType> decoder = input => TPacket.Decode(input);
+#else
         var parameter = Expression.Parameter(typeof(ReadOnlySpan<byte>), "input");
-        var decoder = Expression.Lambda<NetworkPacketDecoder<TPacketType>>(
+        NetworkPacketDecoder<TPacketType> decoder = Expression.Lambda<NetworkPacketDecoder<TPacketType>>(
             Expression.Convert(
                 Expression.Call(typeof(TPacket), "Decode", null, parameter),
                 typeof(TPacketType)),
             parameter).Compile();
+#endif
         _decoders.Add(decoder);
         _nextIdentity++;
     }
