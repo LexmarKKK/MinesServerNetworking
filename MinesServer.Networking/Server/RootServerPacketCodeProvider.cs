@@ -68,6 +68,7 @@ public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRo
         Register<ChatMessageListPacket>();
         Register<ChatListPacket>();
         Register<MovementSpeedPacket>();
+        Register<LoadingTipPacket>();
     }
 }
 

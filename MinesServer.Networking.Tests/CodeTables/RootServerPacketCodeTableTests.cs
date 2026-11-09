@@ -79,6 +79,7 @@ internal sealed class RootServerPacketCodeTableTests
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatMessageListPacket>(), Is.EqualTo((ushort)46));
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatListPacket>(), Is.EqualTo((ushort)47));
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<MovementSpeedPacket>(), Is.EqualTo((ushort)48));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LoadingTipPacket>(), Is.EqualTo((ushort)49));
         });
     }
 

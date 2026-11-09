@@ -69,9 +69,9 @@ Wire-код пакета — **его позиция в порядке вызо�
 
 | Провайдер | Кодов | Что адресует |
 |---|---|---|
-| `RootClientPacketCodeProvider` | 26 | корневые клиентские пакеты |
-| `ActionClientPacketCodeProvider` | 14 | игровые действия внутри `ActionClientPacket` |
-| `RootServerPacketCodeProvider` | 50 | корневые серверные пакеты |
+| `RootClientPacketCodeProvider` | 31 | корневые клиентские пакеты |
+| `ActionClientPacketCodeProvider` | 13 | игровые действия внутри `ActionClientPacket` |
+| `RootServerPacketCodeProvider` | 49 | корневые серверные пакеты |
 | `HBPacketCodeProvider` | 6 | события внутри RT-кадра `HBPacket` |
 | `GUIComponentPacketCodeProvider` | 13 | компоненты серверных окон |
 
@@ -130,10 +130,12 @@ Wire-код пакета — **его позиция в порядке вызо�
 | массив с префиксом `uint8` | `WriteU1PrefixedArray` |
 | массив с префиксом `uint16` | `WriteU2PrefixedArray` |
 | хвост целиком | `ReadRemainingAsArray<T>` / `ReadRemainingAs*` |
-| `[StructLayout(Sequential, Pack = 1)]` | `ProgramStatePacket`, `CellConfigurationPacket` |
+| `[StructLayout(LayoutKind.Sequential, Pack = 1)]` + `UnsafeWrite`/`UnsafeRead` | `ProgramStatePacket` |
 
 Соглашения неоднородны: часть полей идёт через `MemoryWriter`-вызовы, часть —
-blit-структурой через `UnsafeWrite`. Схемы и генератора нет.
+blit-структурами с явным layout через `UnsafeWrite`/`UnsafeRead`.
+`CellConfigurationPacket` сериализует поля по одному и пишет строкам отдельные
+однобайтовые длины; это не blit-структура. Схемы и генератора нет.
 
 **Правило хвоста.** Декодер, читающий остаток кадра через `ReadRemainingAs*`,
 обязан уметь разобрать и пустой хвост. Добавление trailing-поля тогда не ломает
@@ -141,15 +143,16 @@ wire; добавление поля в **середину** — ломает.
 
 ## Пустые пакеты
 
-В протоколе **29** пакетов с `Size => 0`. Они делятся на четыре группы, которые
-важно не смешивать:
+В текущем коде **32** пакетных типа с `Size => 0`: 5 серверных корневых, 9
+клиентских action-подпакетов и 18 клиентских корневых. Группировка описывает
+форму payload, а не наличие серверной реализации или итоговую семантику:
+нулевой payload сам по себе не означает no-op.
 
-| Группа | Кол-во | Это баг? |
-|---|---|---|
-| Серверные корневые | 5 | Нет. `CloseWindowPacket`, `HideClanPacket`, `ClearStatusPacket`, `DeselectItemPacket`, `OpenProgrammatorPacket` — семантически им нечего нести |
-| Клиентские action-подпакеты | 10 | Нет. Координаты приходят из обёртки `ActionClientPacket(x, y, payload)` |
-| Клиентские корневые, реализованные | 7 | Нет. Пустой payload компенсирован состоянием сервера |
-| Клиентские корневые, no-op на сервере | 7 | Серверная работа, не протокол |
+| Группа | Кол-во | Примечание |
+|---|---:|---|
+| Серверные корневые | 5 | `CloseWindowPacket`, `HideClanPacket`, `ClearStatusPacket`, `DeselectItemPacket`, `OpenProgrammatorPacket` |
+| Клиентские action-подпакеты | 9 | Координаты приходят из обёртки `ActionClientPacket(x, y, payload)` |
+| Клиентские корневые | 18 | Семантика определяется типом пакета и его обработчиком |
 
 Нулевая длина payload — часть wire-контракта пустых пакетов. Их размер задаётся
 явно как `0` и не зависит от физического размера структуры в конкретном рантайме.
@@ -167,8 +170,7 @@ wire; добавление поля в **середину** — ломает.
 
 - `IConnection` объявляет `event Action<Exception> OnError` и
   `int DecodeErrorCount`.
-- Обе `TcpConnection` (клиент и сервер) оборачивают `Decode` в `try/catch`,
-  увеличивают счётчик, поднимают `OnError` и **продолжают цикл**.
+- Клиентский `ManagedTcpConnection` (`Assets/Scripts/Networking/Connection/Transport/TCP/ManagedTcpConnection.cs`) и серверный `TcpConnection` (`MinesServer.Networking.Connection.Server`) оборачивают `Decode` в `try/catch`, увеличивают `DecodeErrorCount`, поднимают `OnError` и **продолжают цикл**.
 
 Продолжать, а не выходить, обязательно: кадр к этому моменту уже потреблён
 буфером, и выход из метода отбросил бы все кадры, уже лежащие в буфере.
