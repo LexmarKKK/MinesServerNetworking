@@ -9,8 +9,6 @@ internal sealed class CellConfigurationTest : PacketTest<CellConfigurationPacket
         Properties: CellConfigProperties.Passable | CellConfigProperties.Glowing,
         DrawLayer: CellRenderLayer.Foreground,
         Outline: CellOutlineKind.Wavy,
-        TextureName: "Visual/Cells/Rock.png",
-        DecalTextureName: "Visual/World/Terrain/Decals/terrain-decals-rock.png",
         ReliefGroup: 2,
         AnimationType: CellAnimationType.Prismatic,
         AnimationPalette: 2,
@@ -24,7 +22,9 @@ internal sealed class CellConfigurationTest : PacketTest<CellConfigurationPacket
         var packet = Packet;
         Assert.Multiple(() =>
         {
-            Assert.That(packet.Size, Is.EqualTo(17 + "Visual/Cells/Rock.png".Length + "Visual/World/Terrain/Decals/terrain-decals-rock.png".Length));
+            // Только значения без строк: Properties, DrawLayer, Outline, ReliefGroup,
+            // AnimationType, AnimationPalette (6 байт) + float + int + TextureAnchor.
+            Assert.That(packet.Size, Is.EqualTo(15));
             var bytes = new byte[packet.Size];
             Assert.That(packet.Encode(bytes), Is.EqualTo(packet.Size));
             Assert.That(CellConfigurationPacket.Decode(bytes), Is.EqualTo(packet));
