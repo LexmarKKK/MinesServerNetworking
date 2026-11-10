@@ -11,8 +11,6 @@ internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
                 Properties: CellConfigProperties.Passable,
                 DrawLayer: CellRenderLayer.Background,
                 Outline: CellOutlineKind.Pliant,
-                TextureName: "",
-                DecalTextureName: "",
                 ReliefGroup: 0,
                 AnimationType: CellAnimationType.None,
                 AnimationPalette: 0,
@@ -22,8 +20,6 @@ internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
                 Properties: CellConfigProperties.None,
                 DrawLayer: CellRenderLayer.Foreground,
                 Outline: CellOutlineKind.Round,
-                TextureName: "Visual/Cells/Rock.png",
-                DecalTextureName: "Visual/World/Terrain/Decals/terrain-decals-rock.png",
                 ReliefGroup: 1,
                 AnimationType: CellAnimationType.Prismatic,
                 AnimationPalette: 1,
@@ -34,5 +30,6 @@ internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
             [1, 2, 3],
             [4, 5, 6]
         ],
-        [new AssetsDefinitionPacket("Visual/Cells/Rock.png", "0123456789abcdef0123456789abcdef", 4096)]);
+        [new AssetsDefinitionPacket("Visual/Cells/Rock.png", "0123456789abcdef0123456789abcdef", 4096)],
+        [new CellDecalEntry("Visual/World/Terrain/Decals/terrain-decals-rock.png", [1])]);
 }

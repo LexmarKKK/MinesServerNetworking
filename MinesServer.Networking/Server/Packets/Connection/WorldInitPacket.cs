@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MinesServer.Networking.Server.Packets.Connection;
 
-public readonly record struct WorldInitPacket(string CodeName, string DisplayName, ushort Width, ushort Height, CellConfigurationPacket[] Cells, byte[][] TileGroups, AssetsDefinitionPacket[]? AssetsManifest = null) : IRootServerPacket<WorldInitPacket>
+public readonly record struct WorldInitPacket(string CodeName, string DisplayName, ushort Width, ushort Height, CellConfigurationPacket[] Cells, byte[][] TileGroups, AssetsDefinitionPacket[]? AssetsManifest = null, CellDecalEntry[]? DecalMap = null) : IRootServerPacket<WorldInitPacket>
 {
     public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<WorldInitPacket>();
 
@@ -22,15 +22,18 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
         sizeof(ushort) + // AssetsManifest.Length
         (AssetsManifest?.Sum(x => x.Size) ?? 0) + // AssetsManifest
         sizeof(ushort) + // Cells.Length
-        Cells.Sum(x => x.Size); // Cells
+        Cells.Sum(x => x.Size) + // Cells
+        sizeof(ushort) + // DecalMap.Length
+        (DecalMap?.Sum(x => x.Size) ?? 0); // DecalMap
 
     public int Encode(Span<byte> output)
     {
         var writer = output.Writer();
         AssetsDefinitionPacket[] assets = AssetsManifest ?? Array.Empty<AssetsDefinitionPacket>();
-        if (assets.Length > ushort.MaxValue || Cells.Length > ushort.MaxValue)
+        CellDecalEntry[] decals = DecalMap ?? Array.Empty<CellDecalEntry>();
+        if (assets.Length > ushort.MaxValue || Cells.Length > ushort.MaxValue || decals.Length > ushort.MaxValue)
         {
-            throw new InvalidOperationException("WorldInitPacket contains too many world asset definitions or cell configurations.");
+            throw new InvalidOperationException("WorldInitPacket contains too many world asset definitions, cell configurations or decal entries.");
         }
 
         writer.WriteU1PrefixedASCII(CodeName);
@@ -46,6 +49,9 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
         writer.Write((ushort)Cells.Length);
         foreach (CellConfigurationPacket cell in Cells)
             writer.Advance(cell.Encode(output[writer.Position..]));
+        writer.Write((ushort)decals.Length);
+        foreach (CellDecalEntry decal in decals)
+            writer.Advance(decal.Encode(output[writer.Position..]));
         return writer.Position;
     }
 
@@ -72,6 +78,12 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
             renderConfig[i] = CellConfigurationPacket.Decode(reader.Remaining, out int bytesRead);
             reader.Advance(bytesRead);
         }
+        var decals = new CellDecalEntry[reader.ReadU2()];
+        for (int i = 0; i < decals.Length; i++)
+        {
+            decals[i] = CellDecalEntry.Decode(reader.Remaining, out int bytesRead);
+            reader.Advance(bytesRead);
+        }
         return new WorldInitPacket(
             codeName,
             name,
@@ -79,7 +91,8 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
             height,
             renderConfig,
             tileGroups,
-            assets);
+            assets,
+            decals);
     }
 
     public bool Equals(WorldInitPacket other) =>
@@ -89,6 +102,7 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
         Height == other.Height &&
         Cells.SequenceEqual(other.Cells) &&
         (AssetsManifest ?? Array.Empty<AssetsDefinitionPacket>()).SequenceEqual(other.AssetsManifest ?? Array.Empty<AssetsDefinitionPacket>()) &&
+        (DecalMap ?? Array.Empty<CellDecalEntry>()).SequenceEqual(other.DecalMap ?? Array.Empty<CellDecalEntry>()) &&
         TileGroups.Length == other.TileGroups.Length &&
         TileGroups.SelectMany(x => x).SequenceEqual(other.TileGroups.SelectMany(x => x));
     public override int GetHashCode()
@@ -104,6 +118,8 @@ public readonly record struct WorldInitPacket(string CodeName, string DisplayNam
             hash.Add(tile);
         foreach (var asset in AssetsManifest ?? Array.Empty<AssetsDefinitionPacket>())
             hash.Add(asset);
+        foreach (CellDecalEntry decal in DecalMap ?? Array.Empty<CellDecalEntry>())
+            hash.Add(decal);
         return hash.ToHashCode();
     }
 
