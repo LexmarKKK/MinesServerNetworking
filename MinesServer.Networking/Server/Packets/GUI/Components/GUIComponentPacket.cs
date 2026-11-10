@@ -30,14 +30,6 @@ public abstract record class GUIComponentPacket : IGUIComponentPacket
             throw new ArgumentNullException(nameof(AttachedProperties));
         }
 
-        GUIProtocolValidation.U1Ascii(OnClickContext, nameof(OnClickContext));
-        GUIProtocolValidation.U1Count(AttachedProperties.Length, nameof(AttachedProperties));
-        foreach (StringPairPacket property in AttachedProperties)
-        {
-            GUIProtocolValidation.U1Ascii(property.Key, nameof(AttachedProperties));
-            GUIProtocolValidation.U2Utf16(property.Value, nameof(AttachedProperties));
-        }
-
         var writer = output.Writer();
         writer.Write(Style is not null);
         if(Style is not null)

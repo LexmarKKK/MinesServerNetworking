@@ -24,7 +24,6 @@ public abstract record class ContainerComponentPacket : GUIComponentPacket, ICon
             throw new ArgumentNullException(nameof(Children));
         }
 
-        GUIProtocolValidation.U2Count(Children.Count, nameof(Children));
         foreach (IGUIComponentPacket child in Children)
         {
             if (child is null)

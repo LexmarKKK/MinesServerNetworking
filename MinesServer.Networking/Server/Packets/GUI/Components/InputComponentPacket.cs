@@ -52,8 +52,6 @@ public abstract record class InputComponentPacket<TValue> : GUIComponentPacket, 
         {
             throw new InvalidOperationException($"{GetType().Name}: Name must be set before encoding an input component.");
         }
-
-        GUIProtocolValidation.U1Ascii(Name, nameof(Name));
     }
 
     protected InputComponentPacket(ref MemoryReader reader) : base(ref reader)

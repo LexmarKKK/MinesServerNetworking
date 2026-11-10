@@ -8,7 +8,7 @@ internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
     public override WorldInitPacket Packet => new("test", "Тестовый мир", 10, 10,
         [
             new(
-                Passable: true,
+                Properties: CellConfigProperties.Passable,
                 DrawLayer: CellRenderLayer.Background,
                 Outline: CellOutlineKind.Pliant,
                 TextureName: "",
@@ -19,7 +19,7 @@ internal sealed class WorldInitTest : RootServerPacketTest<WorldInitPacket>
                 FrameAnimationSpeed: 6f,
                 MapColor: 0),
             new(
-                Passable: false,
+                Properties: CellConfigProperties.None,
                 DrawLayer: CellRenderLayer.Foreground,
                 Outline: CellOutlineKind.Round,
                 TextureName: "Visual/Cells/Rock.png",

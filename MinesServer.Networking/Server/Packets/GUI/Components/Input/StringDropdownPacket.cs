@@ -27,13 +27,6 @@ public record class StringDropdownPacket : DropdownComponentPacket<string>, IGUI
             throw new ArgumentNullException(nameof(Values));
         }
 
-        GUIProtocolValidation.U1Utf16(DefaultValue, nameof(DefaultValue));
-        GUIProtocolValidation.U1Count(Values.Length, nameof(Values));
-        foreach (string value in Values)
-        {
-            GUIProtocolValidation.U1Utf16(value, nameof(Values));
-        }
-
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedUtf16(DefaultValue);

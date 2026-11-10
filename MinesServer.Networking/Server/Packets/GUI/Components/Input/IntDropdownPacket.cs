@@ -24,8 +24,6 @@ public record class IntDropdownPacket : DropdownComponentPacket<int>, IGUICompon
             throw new ArgumentNullException(nameof(Values));
         }
 
-        GUIProtocolValidation.U1Count(Values.Length, nameof(Values));
-
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.Write(DefaultValue);

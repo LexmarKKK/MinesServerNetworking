@@ -103,8 +103,8 @@ internal sealed class RootServerPacketCodeTableTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(RootServerPacketCodeProvider.IsValid((ushort)49), Is.False);
-            Assert.That(RootServerPacketCodeProvider.TryGetDecoder((ushort)49, out _), Is.False);
+            Assert.That(RootServerPacketCodeProvider.IsValid((ushort)50), Is.False);
+            Assert.That(RootServerPacketCodeProvider.TryGetDecoder((ushort)50, out _), Is.False);
         });
     }
 }

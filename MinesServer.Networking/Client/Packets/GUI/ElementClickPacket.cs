@@ -24,7 +24,6 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
             throw new ArgumentNullException(nameof(Context));
         }
 
-        GUIProtocolValidation.U1Ascii(WindowTag, nameof(WindowTag));
         if (string.IsNullOrEmpty(WindowTag))
         {
             throw new ArgumentException("WindowTag must be set.", nameof(WindowTag));
@@ -32,12 +31,6 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
         if (ElementIndex < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(ElementIndex));
-        }
-
-        foreach (StringPairPacket value in Context)
-        {
-            GUIProtocolValidation.U1Ascii(value.Key, nameof(Context));
-            GUIProtocolValidation.U2Utf16(value.Value, nameof(Context));
         }
 
         var writer = output.Writer();

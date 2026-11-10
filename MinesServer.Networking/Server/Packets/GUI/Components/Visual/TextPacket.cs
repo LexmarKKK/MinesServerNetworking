@@ -16,8 +16,6 @@ public record class TextPacket : GUIComponentPacket, IGUIComponentPacket<TextPac
 
     public override int Encode(Span<byte> output)
     {
-        GUIProtocolValidation.U2Utf16(Text, nameof(Text));
-
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU2PrefixedUtf16(Text);

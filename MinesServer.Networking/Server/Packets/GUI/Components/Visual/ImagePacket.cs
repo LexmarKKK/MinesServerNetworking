@@ -19,8 +19,6 @@ public record class ImagePacket : GUIComponentPacket, IGUIComponentPacket<ImageP
 
     public override int Encode(Span<byte> output)
     {
-        GUIProtocolValidation.U2Ascii(URI, nameof(URI));
-
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU2PrefixedASCII(URI);

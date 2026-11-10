@@ -20,7 +20,6 @@ public record class ScrollViewerPacket : ContainerComponentPacket, IGUIComponent
 
     public override int Encode(Span<byte> output)
     {
-        GUIProtocolValidation.U1Ascii(Name, nameof(Name));
         if (!Enum.IsDefined(typeof(ScrollbarVisibility), HorizontalScrollBar) ||
             !Enum.IsDefined(typeof(ScrollbarVisibility), VerticalScrollBar))
         {

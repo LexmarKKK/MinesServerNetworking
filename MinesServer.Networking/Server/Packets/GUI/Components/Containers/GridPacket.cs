@@ -27,9 +27,6 @@ public record class GridPacket : ContainerComponentPacket, IGUIComponentPacket<G
             throw new ArgumentNullException(Columns is null ? nameof(Columns) : nameof(Rows));
         }
 
-        GUIProtocolValidation.U1Count(Columns.Length, nameof(Columns));
-        GUIProtocolValidation.U1Count(Rows.Length, nameof(Rows));
-
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedArray(Columns);

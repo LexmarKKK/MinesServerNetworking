@@ -5,7 +5,7 @@ using MinesServer.Utils;
 namespace MinesServer.Networking.Server.Packets.Connection;
 
 public readonly record struct CellConfigurationPacket(
-    bool Passable,
+    CellConfigProperties Properties,
     CellRenderLayer DrawLayer,
     CellOutlineKind Outline,
     string TextureName,
@@ -15,13 +15,12 @@ public readonly record struct CellConfigurationPacket(
     byte AnimationPalette,
     float FrameAnimationSpeed,
     int MapColor,
-    bool Emission = false,
     CellTextureAnchorKind TextureAnchor = CellTextureAnchorKind.Cell) : IServerPacket<CellConfigurationPacket>
 {
     private string SafeTextureName => TextureName ?? string.Empty;
     private string SafeDecalTextureName => DecalTextureName ?? string.Empty;
 
-    public int Size => sizeof(byte) * 10 + sizeof(float) + sizeof(int) + SafeTextureName.Length + SafeDecalTextureName.Length;
+    public int Size => sizeof(byte) * 9 + sizeof(float) + sizeof(int) + SafeTextureName.Length + SafeDecalTextureName.Length;
 
     public int Encode(Span<byte> output)
     {
@@ -33,7 +32,7 @@ public readonly record struct CellConfigurationPacket(
         }
 
         var writer = output.Writer();
-        writer.Write((byte)(Passable ? 1 : 0));
+        writer.Write((byte)Properties);
         writer.Write((byte)DrawLayer);
         writer.Write((byte)Outline);
         writer.WriteU1PrefixedASCII(textureName);
@@ -43,7 +42,6 @@ public readonly record struct CellConfigurationPacket(
         writer.Write(AnimationPalette);
         writer.Write(FrameAnimationSpeed);
         writer.Write(MapColor);
-        writer.Write((byte)(Emission ? 1 : 0));
         writer.Write((byte)TextureAnchor);
         return writer.Position;
     }
@@ -54,7 +52,7 @@ public readonly record struct CellConfigurationPacket(
     {
         var reader = input.Reader();
         var packet = new CellConfigurationPacket(
-            Passable: reader.ReadU1() != 0,
+            Properties: (CellConfigProperties)reader.ReadU1(),
             DrawLayer: (CellRenderLayer)reader.ReadU1(),
             Outline: (CellOutlineKind)reader.ReadU1(),
             TextureName: reader.ReadU1PrefixedASCII(out _),
@@ -64,7 +62,6 @@ public readonly record struct CellConfigurationPacket(
             AnimationPalette: reader.ReadU1(),
             FrameAnimationSpeed: reader.Read<float>(),
             MapColor: reader.Read4(),
-            Emission: reader.ReadU1() != 0,
             TextureAnchor: (CellTextureAnchorKind)reader.ReadU1());
         bytesRead = reader.Position;
         return packet;
