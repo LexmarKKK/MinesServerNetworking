@@ -56,4 +56,15 @@ public readonly record struct GUIStylePacket : IServerPacket<GUIStylePacket>
         BorderWidth == other.BorderWidth &&
         Margin == other.Margin &&
         Padding == other.Padding;
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Background.ToArgb());
+        hash.Add(Border.ToArgb());
+        hash.Add(BorderWidth);
+        hash.Add(Margin);
+        hash.Add(Padding);
+        return hash.ToHashCode();
+    }
+
 }

@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Linq;
 
@@ -6,7 +6,7 @@ namespace MinesServer.Networking.Server.Packets.Utilities;
 
 public readonly record struct RuntimeAssetPacket(string Filename, string ETag, byte[] Contents) : IRootServerPacket<RuntimeAssetPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<RuntimeAssetPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<RuntimeAssetPacket>();
 
     public int Size =>
         sizeof(byte) + // Filename.Length
@@ -38,4 +38,14 @@ public readonly record struct RuntimeAssetPacket(string Filename, string ETag, b
         Filename == other.Filename &&
         ETag == other.ETag &&
         Contents.SequenceEqual(other.Contents);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Filename);
+        hash.Add(ETag);
+        foreach (var value in Contents)
+            hash.Add(value);
+        return hash.ToHashCode();
+    }
+
 }

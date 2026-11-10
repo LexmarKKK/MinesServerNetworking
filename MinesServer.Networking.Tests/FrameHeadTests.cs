@@ -15,7 +15,7 @@ namespace MinesServer.Networking.Tests;
 /// Ограничение обязательно: кадр достигает 4 МБ, и копировать его в исключение
 /// на каждое битое письмо — вектор по памяти и по логам.
 /// </summary>
-internal class FrameHeadTests
+internal sealed class FrameHeadTests
 {
     private static byte[] ClientFrame(byte code, int totalLength)
     {

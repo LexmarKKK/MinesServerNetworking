@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Connection;
 
 public readonly record struct OutdatedClientPacket(ushort NewVersionCode, string Name, string Description, string UpdateURL, string CLIArgs) : IRootServerPacket<OutdatedClientPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<OutdatedClientPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<OutdatedClientPacket>();
 
     public int Size =>
         sizeof(ushort) + // NewVersionCode

@@ -1,4 +1,6 @@
-﻿using MinesServer.Networking.Exceptions;
+﻿#nullable enable
+using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,19 @@ public abstract record class ContainerComponentPacket : GUIComponentPacket, ICon
 
     public override int Encode(Span<byte> output)
     {
+        if (Children is null)
+        {
+            throw new ArgumentNullException(nameof(Children));
+        }
+
+        foreach (IGUIComponentPacket child in Children)
+        {
+            if (child is null)
+            {
+                throw new ArgumentException("GUI container children cannot contain null.", nameof(Children));
+            }
+        }
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.Write((ushort)Children.Count);
@@ -47,4 +62,13 @@ public abstract record class ContainerComponentPacket : GUIComponentPacket, ICon
     public virtual bool Equals(ContainerComponentPacket? other) =>
         base.Equals(other) &&
         Children.SequenceEqual(other.Children);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(base.GetHashCode());
+        foreach (var child in Children)
+            hash.Add(child);
+        return hash.ToHashCode();
+    }
+
 }

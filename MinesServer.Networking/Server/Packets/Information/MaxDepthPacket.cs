@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct MaxDepthPacket(ushort Depth) : IRootServerPacket<MaxDepthPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<MaxDepthPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<MaxDepthPacket>();
 
     public readonly int Size => Unsafe.SizeOf<MaxDepthPacket>();
 

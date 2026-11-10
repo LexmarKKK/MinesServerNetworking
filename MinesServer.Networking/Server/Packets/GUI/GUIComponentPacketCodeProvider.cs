@@ -1,11 +1,12 @@
-﻿using MinesServer.Networking.Server.Packets.GUI.Components;
+#nullable enable
+using MinesServer.Networking.Server.Packets.GUI.Components;
 using MinesServer.Networking.Server.Packets.GUI.Components.Containers;
 using MinesServer.Networking.Server.Packets.GUI.Components.Input;
 using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 namespace MinesServer.Networking.Server.Packets.GUI;
 
-public class GUIComponentPacketCodeProvider : NetworkPacketCodeProvider<IGUIComponentPacket, byte, GUIComponentPacketCodeProvider>
+public sealed class GUIComponentPacketCodeProvider : NetworkPacketCodeProvider<IGUIComponentPacket, byte, GUIComponentPacketCodeProvider>
 {
     static GUIComponentPacketCodeProvider()
     {

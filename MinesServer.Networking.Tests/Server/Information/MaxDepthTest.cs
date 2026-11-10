@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class MaxDepthTest : RootServerPacketTest<MaxDepthPacket>
+internal sealed class MaxDepthTest : RootServerPacketTest<MaxDepthPacket>
 {
     public override MaxDepthPacket Packet => new(5000);
 }

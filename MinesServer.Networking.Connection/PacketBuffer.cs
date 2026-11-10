@@ -1,5 +1,7 @@
-﻿using MinesServer.Networking.Exceptions;
+#nullable enable
+using MinesServer.Networking.Exceptions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace MinesServer.Networking.Connection;
@@ -20,6 +22,9 @@ public class PacketBuffer
     private readonly int _initialCapacity;
     private readonly int _maxLength;
     private const int ShrinkFactor = 4;
+
+    /// <summary>Unconsumed bytes, available to the thread that owns this buffer.</summary>
+    public ReadOnlySpan<byte> BufferedData => _buffer.AsSpan(_readPos, _writePos - _readPos);
 
     public PacketBuffer(int initialCapacity = DefaultInitialCapacity, int maxLength = DefaultMaxLength)
     {
@@ -47,7 +52,7 @@ public class PacketBuffer
         _writePos += length;
     }
 
-    public bool TryTake(out byte[] packet)
+    public bool TryTake([NotNullWhen(true)] out byte[]? packet)
     {
         packet = null;
         int available = _writePos - _readPos;
@@ -137,4 +142,3 @@ public class PacketBuffer
         }
     }
 }
-    

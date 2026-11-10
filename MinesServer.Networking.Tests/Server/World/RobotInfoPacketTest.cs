@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.World;
 
-internal class RobotInfoPacketTest : RootServerPacketTest<RobotInfoPacket>
+internal sealed class RobotInfoPacketTest : RootServerPacketTest<RobotInfoPacket>
 {
     public override RobotInfoPacket Packet => new(
     101,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace MinesServer.Networking.Exceptions;
 
@@ -40,11 +41,15 @@ public class PacketDecodeException : NetworkException
         {
             if (FrameHead is null)
                 return string.Empty;
-#if NET7_0_OR_GREATER
-            return Convert.ToHexString(FrameHead);
-#else
-            return BitConverter.ToString(FrameHead).Replace("-", "");
-#endif
+            const string hexDigits = "0123456789ABCDEF";
+            var hex = new char[FrameHead.Length * 2];
+            for (int index = 0; index < FrameHead.Length; index++)
+            {
+                byte value = FrameHead[index];
+                hex[index * 2] = hexDigits[value >> 4];
+                hex[index * 2 + 1] = hexDigits[value & 0x0F];
+            }
+            return new string(hex);
         }
     }
 }

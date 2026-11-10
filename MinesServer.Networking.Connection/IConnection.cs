@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Shared;
+using MinesServer.Networking.Contracts;
 using System;
 
 namespace MinesServer.Networking.Connection;

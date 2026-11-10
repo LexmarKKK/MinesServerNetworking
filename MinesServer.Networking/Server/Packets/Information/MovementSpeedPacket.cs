@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Information;
 
 public readonly record struct MovementSpeedPacket(IDictionary<CellType, ushort> CooldownMap) : IRootServerPacket<MovementSpeedPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<MovementSpeedPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<MovementSpeedPacket>();
 
     public int Size => CooldownMap.Count * (sizeof(CellType) + sizeof(ushort));
 
@@ -34,4 +34,12 @@ public readonly record struct MovementSpeedPacket(IDictionary<CellType, ushort> 
 
     public bool Equals(MovementSpeedPacket other) =>
         CooldownMap.SequenceEqual(other.CooldownMap);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        foreach (var entry in CooldownMap)
+            hash.Add(entry);
+        return hash.ToHashCode();
+    }
+
 }

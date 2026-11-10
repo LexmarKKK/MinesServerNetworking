@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 
@@ -6,7 +6,7 @@ namespace MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 public record class LinePacket : GUIComponentPacket, IGUIComponentPacket<LinePacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<LinePacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<LinePacket>();
 
     public LineDirection Direction { get; init; }
 

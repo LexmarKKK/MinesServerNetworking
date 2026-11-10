@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Client.Packets.Connection;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct PongPacket(long SentAt) : IRootClientPacket<PongPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<PongPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<PongPacket>();
 
     public int Size => Unsafe.SizeOf<PongPacket>();
 

@@ -24,7 +24,7 @@ namespace MinesServer.Networking.Tests.CodeTables;
 /// Таблицы живут здесь, а не в репозитории сервера: пока они были там, протокол
 /// можно было сломать здесь, и падал бы сервер.
 /// </summary>
-internal class RootServerPacketCodeTableTests
+internal sealed class RootServerPacketCodeTableTests
 {
     [Test]
     public void ServerPacketCodes_MatchRegistrationOrder()
@@ -60,26 +60,26 @@ internal class RootServerPacketCodeTableTests
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<ClearStatusLinePacket>(), Is.EqualTo((ushort)27));
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<ClearStatusPacket>(), Is.EqualTo((ushort)28));
             Assert.That(RootServerPacketCodeProvider.GetPacketCode<SkillProgressPacket>(), Is.EqualTo((ushort)29));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<DailyBonusStatePacket>(), Is.EqualTo((ushort)30));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<MissionInitPacket>(), Is.EqualTo((ushort)31));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LocalChatMessagePacket>(), Is.EqualTo((ushort)32));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ModalWindowPacket>(), Is.EqualTo((ushort)33));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<WorldInitPacket>(), Is.EqualTo((ushort)34));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ClientConfigPacket>(), Is.EqualTo((ushort)35));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<BreakpointHitPacket>(), Is.EqualTo((ushort)36));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<RuntimeAssetPacket>(), Is.EqualTo((ushort)37));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<HBPacket>(), Is.EqualTo((ushort)38));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<RobotInfoPacket>(), Is.EqualTo((ushort)39));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LZ4Packet>(), Is.EqualTo((ushort)40));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<UpdateProgramPacket>(), Is.EqualTo((ushort)41));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ProgramMemoryPacket>(), Is.EqualTo((ushort)42));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ProgramStatePacket>(), Is.EqualTo((ushort)43));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<OpenProgrammatorPacket>(), Is.EqualTo((ushort)44));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<AuthTokenPacket>(), Is.EqualTo((ushort)45));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatMutePacket>(), Is.EqualTo((ushort)46));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatMessageListPacket>(), Is.EqualTo((ushort)47));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatListPacket>(), Is.EqualTo((ushort)48));
-            Assert.That(RootServerPacketCodeProvider.GetPacketCode<MovementSpeedPacket>(), Is.EqualTo((ushort)49));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<MissionInitPacket>(), Is.EqualTo((ushort)30));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LocalChatMessagePacket>(), Is.EqualTo((ushort)31));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ModalWindowPacket>(), Is.EqualTo((ushort)32));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<WorldInitPacket>(), Is.EqualTo((ushort)33));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ClientConfigPacket>(), Is.EqualTo((ushort)34));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<BreakpointHitPacket>(), Is.EqualTo((ushort)35));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<RuntimeAssetPacket>(), Is.EqualTo((ushort)36));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<HBPacket>(), Is.EqualTo((ushort)37));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<RobotInfoPacket>(), Is.EqualTo((ushort)38));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LZ4Packet>(), Is.EqualTo((ushort)39));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<UpdateProgramPacket>(), Is.EqualTo((ushort)40));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ProgramMemoryPacket>(), Is.EqualTo((ushort)41));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ProgramStatePacket>(), Is.EqualTo((ushort)42));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<OpenProgrammatorPacket>(), Is.EqualTo((ushort)43));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<AuthTokenPacket>(), Is.EqualTo((ushort)44));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatMutePacket>(), Is.EqualTo((ushort)45));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatMessageListPacket>(), Is.EqualTo((ushort)46));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<ChatListPacket>(), Is.EqualTo((ushort)47));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<MovementSpeedPacket>(), Is.EqualTo((ushort)48));
+            Assert.That(RootServerPacketCodeProvider.GetPacketCode<LoadingTipPacket>(), Is.EqualTo((ushort)49));
         });
     }
 

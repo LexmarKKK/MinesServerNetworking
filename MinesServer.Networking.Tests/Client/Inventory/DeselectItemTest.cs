@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.Inventory;
 
-internal class DeselectItemTest : RootClientPacketTest<DeselectItemPacket>
+internal sealed class DeselectItemTest : RootClientPacketTest<DeselectItemPacket>
 {
     public override DeselectItemPacket Packet => new();
 }

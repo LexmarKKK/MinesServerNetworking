@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Client.Packets.Programmator;
 
 public readonly record struct SaveProgramPacket(int ProgramId, bool SaveAndRun, IReadOnlyList<(ProgAction Operator, string Label, string Value)> Program, int[] Breakpoints) : IRootClientPacket<SaveProgramPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<SaveProgramPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<SaveProgramPacket>();
 
     public int Size =>
         sizeof(int) + // ProgramId
@@ -48,4 +48,17 @@ public readonly record struct SaveProgramPacket(int ProgramId, bool SaveAndRun, 
         SaveAndRun == other.SaveAndRun &&
         Program.SequenceEqual(other.Program) &&
         Breakpoints.SequenceEqual(other.Breakpoints);
+
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(ProgramId);
+        hash.Add(SaveAndRun);
+        foreach (var instruction in Program)
+            hash.Add(instruction);
+        foreach (var breakpoint in Breakpoints)
+            hash.Add(breakpoint);
+        return hash.ToHashCode();
+    }
+
 }

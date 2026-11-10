@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 namespace MinesServer.Networking.Tests.Server.GUI.Containers;
 
-internal class DockPanelTest : PacketTest<DockPanelPacket>
+internal sealed class DockPanelTest : PacketTest<DockPanelPacket>
 {
     public override DockPanelPacket Packet => new()
     {

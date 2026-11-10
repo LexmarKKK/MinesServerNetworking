@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Visual;
 
-internal class ImageTest : PacketTest<ImagePacket>
+internal sealed class ImageTest : PacketTest<ImagePacket>
 {
     public override ImagePacket Packet => new() {
         URI = "http://localhost/test.png",

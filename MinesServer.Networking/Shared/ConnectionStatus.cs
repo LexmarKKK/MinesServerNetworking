@@ -1,4 +1,4 @@
-﻿namespace MinesServer.Networking.Shared;
+namespace MinesServer.Networking.Contracts;
 
 public enum ConnectionStatus
 {

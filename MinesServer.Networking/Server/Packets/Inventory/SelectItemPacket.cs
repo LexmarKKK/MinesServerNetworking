@@ -1,4 +1,4 @@
-﻿using MinesServer.Data;
+using MinesServer.Data;
 using MinesServer.Utils;
 using System;
 using System.Collections;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Inventory;
 
 public readonly record struct SelectItemPacket(ItemType Item, string Name, string Description, byte DX, byte DY, byte Distance, bool Rotating, BitArray Highlight) : IRootServerPacket<SelectItemPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<SelectItemPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<SelectItemPacket>();
 
     public int Size =>
         sizeof(ItemType) + // Item

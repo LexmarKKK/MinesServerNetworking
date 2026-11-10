@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.GUI;
 
-internal class OpenHelpClickTest : RootClientPacketTest<OpenHelpClickPacket>
+internal sealed class OpenHelpClickTest : RootClientPacketTest<OpenHelpClickPacket>
 {
     public override OpenHelpClickPacket Packet => new();
 }

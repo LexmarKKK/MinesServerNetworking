@@ -13,20 +13,24 @@
 
 ```
 dotnet build          # MinesServer_Networking.slnx
-dotnet test           # 363 теста, покрытие всех 109 зарегистрированных сообщений
+dotnet test           # тесты кодирования, таблиц кодов, ошибок кадров, сжатия и TCP
 ```
 
-ЦелевыеFramework'ы различаются по назначению, и это важно:
+Все исходники пакетов компилируются с C# 12. Unity подключает их через `asmdef`
+и применяет клиентский `Assets/csc.rsp`; проектная сборка проверяет код на
+целевом профиле Unity и отдельно собирает сервер под .NET 9.
 
-| Проект | Таргеты | Кто собирает |
-|---|---|---|
-| `MinesServer.Data` | `net9.0;net481` | оба |
-| `MinesServer.Utils` | `net481;net9.0` | оба |
-| `MinesServer.Networking` | `net481;net9.0` | оба |
-| `MinesServer.Networking.Connection` | `net481;net9.0` | оба |
-| `MinesServer.Networking.Connection.Client` | `net481` | клиент (Unity/Mono) |
-| `MinesServer.Networking.Connection.Server` | `net9.0` | сервер |
-| `MinesServer.Networking.Tests` | `net9.0` | CI |
+| Проект | Версия C# | Целевой API-профиль | Кто собирает |
+|---|---|---|---|
+| `MinesServer.Data` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Utils` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking.Connection` | C# 12 | `netstandard2.1;net9.0` | клиент и сервер |
+| `MinesServer.Networking.Connection.Server` | C# 12 | `net9.0` | сервер |
+| `MinesServer.Networking.Tests` | C# 12 | `net9.0` | CI |
+
+`netstandard2.1` и `net9.0` — целевые API-профили; они не задают версию C#.
+Для всех проектов пакета компилятор закреплён на C# 12 в `Directory.Build.props`.
 
 Схема решения — `MinesServer_Networking.slnx`. Классического `.sln` рядом с ним
 нет намеренно: при двух файлах решений в корне `dotnet build` без аргументов
@@ -65,9 +69,9 @@ Wire-код пакета — **его позиция в порядке вызо�
 
 | Провайдер | Кодов | Что адресует |
 |---|---|---|
-| `RootClientPacketCodeProvider` | 26 | корневые клиентские пакеты |
-| `ActionClientPacketCodeProvider` | 14 | игровые действия внутри `ActionClientPacket` |
-| `RootServerPacketCodeProvider` | 50 | корневые серверные пакеты |
+| `RootClientPacketCodeProvider` | 31 | корневые клиентские пакеты |
+| `ActionClientPacketCodeProvider` | 13 | игровые действия внутри `ActionClientPacket` |
+| `RootServerPacketCodeProvider` | 49 | корневые серверные пакеты |
 | `HBPacketCodeProvider` | 6 | события внутри RT-кадра `HBPacket` |
 | `GUIComponentPacketCodeProvider` | 13 | компоненты серверных окон |
 
@@ -80,9 +84,8 @@ Wire-код пакета — **его позиция в порядке вызо�
 перенумеровываются все последующие коды.
 
 `IsValid` проверяет обе границы: код `0` валиден (первому зарегистрированному
-пакету соответствует ноль), код `>= MaxIdentity` — нет. Ветки `net7+` и `net481`
-обязаны быть семантически идентичны: клиент собирает `net481`, сервер — `net9.0`,
-и расхождение проявится только на одной из сторон.
+пакету соответствует ноль), код `>= MaxIdentity` — нет. Клиент и сервер обязаны
+использовать одну таблицу кодов; тесты проверяют её снимок и декодирование.
 
 ## Сжатие
 
@@ -127,10 +130,12 @@ Wire-код пакета — **его позиция в порядке вызо�
 | массив с префиксом `uint8` | `WriteU1PrefixedArray` |
 | массив с префиксом `uint16` | `WriteU2PrefixedArray` |
 | хвост целиком | `ReadRemainingAsArray<T>` / `ReadRemainingAs*` |
-| `[StructLayout(Sequential, Pack = 1)]` | `ProgramStatePacket`, `CellConfigurationPacket` |
+| `[StructLayout(LayoutKind.Sequential, Pack = 1)]` + `UnsafeWrite`/`UnsafeRead` | `ProgramStatePacket` |
 
 Соглашения неоднородны: часть полей идёт через `MemoryWriter`-вызовы, часть —
-blit-структурой через `UnsafeWrite`. Схемы и генератора нет.
+blit-структурами с явным layout через `UnsafeWrite`/`UnsafeRead`.
+`CellConfigurationPacket` сериализует поля по одному и пишет строкам отдельные
+однобайтовые длины; это не blit-структура. Схемы и генератора нет.
 
 **Правило хвоста.** Декодер, читающий остаток кадра через `ReadRemainingAs*`,
 обязан уметь разобрать и пустой хвост. Добавление trailing-поля тогда не ломает
@@ -138,19 +143,19 @@ wire; добавление поля в **середину** — ломает.
 
 ## Пустые пакеты
 
-В протоколе **29** пакетов с `Size => 0`. Они делятся на четыре группы, которые
-важно не смешивать:
+В текущем коде **32** пакетных типа с `Size => 0`: 5 серверных корневых, 9
+клиентских action-подпакетов и 18 клиентских корневых. Группировка описывает
+форму payload, а не наличие серверной реализации или итоговую семантику:
+нулевой payload сам по себе не означает no-op.
 
-| Группа | Кол-во | Это баг? |
-|---|---|---|
-| Серверные корневые | 5 | Нет. `CloseWindowPacket`, `HideClanPacket`, `ClearStatusPacket`, `DeselectItemPacket`, `OpenProgrammatorPacket` — семантически им нечего нести |
-| Клиентские action-подпакеты | 10 | Нет. Координаты приходят из обёртки `ActionClientPacket(x, y, payload)` |
-| Клиентские корневые, реализованные | 7 | Нет. Пустой payload компенсирован состоянием сервера |
-| Клиентские корневые, no-op на сервере | 7 | Серверная работа, не протокол |
+| Группа | Кол-во | Примечание |
+|---|---:|---|
+| Серверные корневые | 5 | `CloseWindowPacket`, `HideClanPacket`, `ClearStatusPacket`, `DeselectItemPacket`, `OpenProgrammatorPacket` |
+| Клиентские action-подпакеты | 9 | Координаты приходят из обёртки `ActionClientPacket(x, y, payload)` |
+| Клиентские корневые | 18 | Семантика определяется типом пакета и его обработчиком |
 
-`Size => 0` — сознательный костыль: `Unsafe.SizeOf` пустой структуры различается
-на Mono (Unity) = 0 и на .NET = 1, и wire-совместимость достигнута именно нулевым
-payload. Это не семантика протокола.
+Нулевая длина payload — часть wire-контракта пустых пакетов. Их размер задаётся
+явно как `0` и не зависит от физического размера структуры в конкретном рантайме.
 
 **Модель владения программатором.** Список программ, имена и исходники хранит
 сервер, на роботе. Номер программы — её индекс в этом списке, поэтому
@@ -165,8 +170,7 @@ payload. Это не семантика протокола.
 
 - `IConnection` объявляет `event Action<Exception> OnError` и
   `int DecodeErrorCount`.
-- Обе `TcpConnection` (клиент и сервер) оборачивают `Decode` в `try/catch`,
-  увеличивают счётчик, поднимают `OnError` и **продолжают цикл**.
+- Клиентский `ManagedTcpConnection` (`Assets/Scripts/Networking/Connection/Transport/TCP/ManagedTcpConnection.cs`) и серверный `TcpConnection` (`MinesServer.Networking.Connection.Server`) оборачивают `Decode` в `try/catch`, увеличивают `DecodeErrorCount`, поднимают `OnError` и **продолжают цикл**.
 
 Продолжать, а не выходить, обязательно: кадр к этому моменту уже потреблён
 буфером, и выход из метода отбросил бы все кадры, уже лежащие в буфере.
@@ -210,7 +214,6 @@ MinesServer.Data/                     перечисления и структу
 MinesServer.Utils/                     MemoryReader / MemoryWriter, расширения Span
 MinesServer.Networking/                пакеты, код-провайдеры, кодеки, IUnreliableLengthPacket
 MinesServer.Networking.Connection/     PacketBuffer, IConnection, контракт ошибок
-MinesServer.Networking.Connection.Client/  клиентский транспорт (net481, Unity)
 MinesServer.Networking.Connection.Server/  серверный транспорт (net9.0)
 MinesServer.Networking.Tests/          round-trip тесты, снапшоты кодов, негативные тесты
 MinesServer_Networking/                консольный smoke-стенд

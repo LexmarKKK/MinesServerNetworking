@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Input;
 
-internal class SelectableTest : PacketTest<SelectablePacket>
+internal sealed class SelectableTest : PacketTest<SelectablePacket>
 {
     public override SelectablePacket Packet => new() {
         Name = "asdsa",

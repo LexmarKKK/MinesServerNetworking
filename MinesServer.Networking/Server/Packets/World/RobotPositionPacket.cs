@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct RobotPositionPacket(ushort BotId, ushort X, ushort Y, byte Rotation) : IHBPacket<RobotPositionPacket>
 {
-    public byte PacketCode => HBPacketCodeProvider.Cache<RobotPositionPacket>.Code;
+    public byte PacketCode => HBPacketCodeProvider.GetPacketCode<RobotPositionPacket>();
 
     public int Size => Unsafe.SizeOf<RobotPositionPacket>();
 

@@ -2,7 +2,7 @@
   "name": "darkar25.kern.data",
   "version": "1.0.6",
   "displayName": "Kern Data Types",
-  "description": "Shared networking protocol for Client and Server",
+  "description": "Networking protocol wire data types",
   "unity": "6000.7",
   "documentationUrl": "https://github.com/darkar25/MinesServerNetworking",
   "dependencies": {}

@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.World;
 
-internal class LocalChatMessageTest : RootServerPacketTest<LocalChatMessagePacket>
+internal sealed class LocalChatMessageTest : RootServerPacketTest<LocalChatMessagePacket>
 {
     public override LocalChatMessagePacket Packet => new(
         1010,

@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 
 namespace MinesServer.Networking.Tests.Server.GUI.Containers;
 
-internal class CanvasTest : PacketTest<CanvasPacket>
+internal sealed class CanvasTest : PacketTest<CanvasPacket>
 {
     public override CanvasPacket Packet => new()
     {

@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Client.Packets.Utilities
 {
     public readonly record struct RuntimeAssetRequestPacket(IReadOnlyList<RuntimeAssetEntryPacket> Assets) : IRootClientPacket<RuntimeAssetRequestPacket>
     {
-        public byte PacketCode => RootClientPacketCodeProvider.Cache<RuntimeAssetRequestPacket>.Code;
+        public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<RuntimeAssetRequestPacket>();
 
         public int Size => Assets.Sum(x => x.Size);
 
@@ -33,5 +33,14 @@ namespace MinesServer.Networking.Client.Packets.Utilities
         }
 
         public bool Equals(RuntimeAssetRequestPacket other) => Assets.SequenceEqual(other.Assets);
+
+        public override int GetHashCode()
+        {
+            var hash = new System.HashCode();
+            foreach (var asset in Assets)
+                hash.Add(asset);
+            return hash.ToHashCode();
+        }
+
     }
 }

@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.World;
 
 public readonly record struct LocalChatMessagePacket(uint BotId, ushort FallbackX, ushort FallbackY, string Text) : IRootServerPacket<LocalChatMessagePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<LocalChatMessagePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<LocalChatMessagePacket>();
 
     public int Size =>
         sizeof(uint) + // BotId

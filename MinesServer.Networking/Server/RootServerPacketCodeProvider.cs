@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using MinesServer.Networking.Server.Packets.Chat;
 using MinesServer.Networking.Server.Packets.Compression;
 using MinesServer.Networking.Server.Packets.Connection;
@@ -14,7 +15,7 @@ using MinesServer.Networking.Server.Packets.World;
 
 namespace MinesServer.Networking.Server;
 
-public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort, RootServerPacketCodeProvider>
+public sealed class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServerPacket, ushort, RootServerPacketCodeProvider>
 {
     static RootServerPacketCodeProvider()
     {
@@ -48,7 +49,6 @@ public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServe
         Register<ClearStatusLinePacket>();
         Register<ClearStatusPacket>();
         Register<SkillProgressPacket>();
-        Register<DailyBonusStatePacket>();
         Register<MissionInitPacket>();
         Register<LocalChatMessagePacket>();
         Register<ModalWindowPacket>();
@@ -68,12 +68,13 @@ public class RootServerPacketCodeProvider : NetworkPacketCodeProvider<IRootServe
         Register<ChatMessageListPacket>();
         Register<ChatListPacket>();
         Register<MovementSpeedPacket>();
+        Register<LoadingTipPacket>();
     }
 }
 
 internal readonly record struct ReservedRootPacket21(byte Payload) : IRootServerPacket<ReservedRootPacket21>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ReservedRootPacket21>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ReservedRootPacket21>();
 
     public int Size => sizeof(byte);
 

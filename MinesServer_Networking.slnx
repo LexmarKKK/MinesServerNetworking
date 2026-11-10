@@ -1,6 +1,5 @@
 <Solution>
   <Project Path="MinesServer.Data/MinesServer.Data.csproj" />
-  <Project Path="MinesServer.Networking.Connection.Client/MinesServer.Networking.Connection.Client.csproj" />
   <Project Path="MinesServer.Networking.Connection.Server/MinesServer.Networking.Connection.Server.csproj" />
   <Project Path="MinesServer.Networking.Connection/MinesServer.Networking.Connection.csproj" />
   <Project Path="MinesServer.Networking.Tests/MinesServer.Networking.Tests.csproj" />

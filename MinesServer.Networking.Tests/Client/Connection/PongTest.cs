@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.Connection;
 
-internal class PongTest : RootClientPacketTest<PongPacket>
+internal sealed class PongTest : RootClientPacketTest<PongPacket>
 {
-    public override PongPacket Packet => new(DateTime.UtcNow.Ticks);
+    public override PongPacket Packet => new(0x1122334455667788);
 }

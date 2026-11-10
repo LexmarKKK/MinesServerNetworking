@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Mission;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct MissionProgressPacket(long Current, long Max) : IRootServerPacket<MissionProgressPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<MissionProgressPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<MissionProgressPacket>();
 
     public readonly int Size => Unsafe.SizeOf<MissionProgressPacket>();
 

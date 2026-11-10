@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Movement;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct TeleportPacket(ushort X, ushort Y) : IRootServerPacket<TeleportPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<TeleportPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<TeleportPacket>();
 
     public readonly int Size => Unsafe.SizeOf<TeleportPacket>();
 

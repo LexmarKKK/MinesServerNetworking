@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Client.Packets.Chat;
 
 public readonly record struct QueryChatHistoryPacket(string Tag, ulong StartFrom = 0) : IRootClientPacket<QueryChatHistoryPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<QueryChatHistoryPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<QueryChatHistoryPacket>();
 
     public int Size =>
         Tag.Length + // Tag

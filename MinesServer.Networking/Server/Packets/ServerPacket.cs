@@ -1,6 +1,7 @@
 ﻿using MinesServer.Networking.Exceptions;
 using MinesServer.Utils;
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace MinesServer.Networking.Server.Packets;
@@ -43,7 +44,7 @@ public readonly record struct ServerPacket(IRootServerPacket Payload) : IServerP
         writer.Write(Payload.PacketCode);
         writer.Write(Payload);
         var pos = writer.Position + sizeof(int);
-        MemoryMarshal.Write(output, ref pos);
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(output), pos);
         return pos;
     }
 }

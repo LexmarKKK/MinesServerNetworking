@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.Information.StatusPanel;
 
-internal class AddStatusLineTest : RootServerPacketTest<AddStatusLinePacket>
+internal sealed class AddStatusLineTest : RootServerPacketTest<AddStatusLinePacket>
 {
     public override AddStatusLinePacket Packet => new(
     10,

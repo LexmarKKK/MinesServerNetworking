@@ -1,18 +1,15 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
 
 public record class TextBoxPacket : InputComponentPacket<string>, IGUIComponentPacket<TextBoxPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<TextBoxPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<TextBoxPacket>();
 
     public override string DefaultValue { get; init; } = "";
 
-#if NET7_0_OR_GREATER
-    [StringSyntax(StringSyntaxAttribute.Regex)]
-#endif
     public string Regex { get; init; } = "";
 
     public override int Size => base.Size

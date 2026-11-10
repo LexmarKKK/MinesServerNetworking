@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Tests.Connection;
 /// Тесты кадрирования: <see cref="PacketBuffer"/> держит синхронизацию потока
 /// кадров, и покрытия у него не было.
 /// </summary>
-internal class PacketBufferTests
+internal sealed class PacketBufferTests
 {
     private static void Feed(PacketBuffer buffer, byte[] frame) => buffer.Put(frame, frame.Length);
 
@@ -50,8 +50,11 @@ internal class PacketBufferTests
         var frame = Frame([1, 2, 3, 4, 5]);
         Feed(buffer, frame);
 
-        Assert.That(buffer.TryTake(out var packet), Is.True);
-        Assert.That(packet, Is.EqualTo(frame), "taken frame must include its length prefix");
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var packet), Is.True);
+            Assert.That(packet, Is.EqualTo(frame), "taken frame must include its length prefix");
+        });
         Assert.That(buffer.TryTake(out _), Is.False, "buffer must be empty after the only frame is taken");
     }
 
@@ -112,8 +115,11 @@ internal class PacketBufferTests
         Assert.That(buffer.TryTake(out _), Is.False, "incomplete frame must not be taken");
 
         Feed(buffer, frame.AsSpan(20, 44).ToArray());
-        Assert.That(buffer.TryTake(out var packet), Is.True);
-        Assert.That(packet, Is.EqualTo(frame));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var packet), Is.True);
+            Assert.That(packet, Is.EqualTo(frame));
+        });
     }
 
     /// <summary>
@@ -129,12 +135,18 @@ internal class PacketBufferTests
 
         // Первое чтение заканчивается посреди второго кадра.
         Feed(buffer, first.Concat(second.AsSpan(0, 4).ToArray()).ToArray());
-        Assert.That(buffer.TryTake(out var takenFirst), Is.True);
-        Assert.That(takenFirst, Is.EqualTo(first));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var takenFirst), Is.True);
+            Assert.That(takenFirst, Is.EqualTo(first));
+        });
 
         Feed(buffer, second.AsSpan(4).ToArray());
-        Assert.That(buffer.TryTake(out var takenSecond), Is.True);
-        Assert.That(takenSecond, Is.EqualTo(second));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var takenSecond), Is.True);
+            Assert.That(takenSecond, Is.EqualTo(second));
+        });
     }
 
     [Test]
@@ -147,8 +159,11 @@ internal class PacketBufferTests
         Assert.That(buffer.TryTake(out _), Is.False);
 
         Feed(buffer, frame.AsSpan(2).ToArray());
-        Assert.That(buffer.TryTake(out var packet), Is.True);
-        Assert.That(packet, Is.EqualTo(frame));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var packet), Is.True);
+            Assert.That(packet, Is.EqualTo(frame));
+        });
     }
 
     /// <summary>
@@ -168,8 +183,11 @@ internal class PacketBufferTests
 
         Feed(buffer, dirty, 40, frame.Length);
 
-        Assert.That(buffer.TryTake(out var packet), Is.True);
-        Assert.That(packet, Is.EqualTo(frame));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var packet), Is.True);
+            Assert.That(packet, Is.EqualTo(frame));
+        });
     }
 
     [Test]
@@ -222,8 +240,11 @@ internal class PacketBufferTests
         var big = FrameOfLength(8192);
         Feed(buffer, big);
 
-        Assert.That(buffer.TryTake(out var packet), Is.True);
-        Assert.That(packet, Is.EqualTo(big));
+        Assert.Multiple(() =>
+        {
+            Assert.That(buffer.TryTake(out var packet), Is.True);
+            Assert.That(packet, Is.EqualTo(big));
+        });
     }
 
     /// <summary>

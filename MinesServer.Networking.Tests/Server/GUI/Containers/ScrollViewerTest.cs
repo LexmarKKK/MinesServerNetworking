@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.GUI.Containers;
 
-internal class ScrollViewerTest : PacketTest<ScrollViewerPacket>
+internal sealed class ScrollViewerTest : PacketTest<ScrollViewerPacket>
 {
     public override ScrollViewerPacket Packet => new() {
         HorizontalScrollBar = ScrollbarVisibility.Hidden,

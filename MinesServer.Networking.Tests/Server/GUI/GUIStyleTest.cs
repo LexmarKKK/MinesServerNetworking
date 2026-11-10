@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.GUI;
 
-internal class GUIStyleTest : PacketTest<GUIStylePacket>
+internal sealed class GUIStyleTest : PacketTest<GUIStylePacket>
 {
     public override GUIStylePacket Packet => new()
     {

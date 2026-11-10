@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Connection;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct PingPacket(long SentAt, int PreviousPing) : IRootServerPacket<PingPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<PingPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<PingPacket>();
 
     public readonly int Size => Unsafe.SizeOf<PingPacket>();
 

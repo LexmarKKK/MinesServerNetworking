@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Client.Packets.Movement;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct MovePacket(ushort X, ushort Y) : IActionClientPacket<MovePacket>
 {
-    public byte PacketCode => ActionClientPacketCodeProvider.Cache<MovePacket>.Code;
+    public byte PacketCode => ActionClientPacketCodeProvider.GetPacketCode<MovePacket>();
 
     public int Size => Unsafe.SizeOf<MovePacket>();
 

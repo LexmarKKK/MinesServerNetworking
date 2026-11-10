@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Information.StatusPanel;
 
 public readonly record struct AddStatusLinePacket(byte BlinkRate, Color Color, string Tag, IReadOnlyList<string> Text) : IRootServerPacket<AddStatusLinePacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<AddStatusLinePacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<AddStatusLinePacket>();
 
     public int Size =>
         sizeof(byte) + // BlinkRate
@@ -46,4 +46,15 @@ public readonly record struct AddStatusLinePacket(byte BlinkRate, Color Color, s
         Color.ToArgb().Equals(other.Color.ToArgb()) &&
         Tag == other.Tag &&
         Text.SequenceEqual(other.Text);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(BlinkRate);
+        hash.Add(Color.ToArgb());
+        hash.Add(Tag);
+        foreach (var part in Text)
+            hash.Add(part);
+        return hash.ToHashCode();
+    }
+
 }

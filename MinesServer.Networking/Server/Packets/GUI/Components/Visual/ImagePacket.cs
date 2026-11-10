@@ -1,10 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Visual;
 public record class ImagePacket : GUIComponentPacket, IGUIComponentPacket<ImagePacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<ImagePacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<ImagePacket>();
 
     public string URI { get; init; } = "";
     public byte Width { get; init; } = 16;

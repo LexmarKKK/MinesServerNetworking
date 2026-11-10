@@ -1,4 +1,6 @@
-﻿using MinesServer.Utils;
+﻿#nullable enable
+using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components;
@@ -46,8 +48,10 @@ public abstract record class InputComponentPacket<TValue> : GUIComponentPacket, 
     /// </summary>
     private void EnsureNamed()
     {
-        if (Name is null)
+        if (string.IsNullOrEmpty(Name))
+        {
             throw new InvalidOperationException($"{GetType().Name}: Name must be set before encoding an input component.");
+        }
     }
 
     protected InputComponentPacket(ref MemoryReader reader) : base(ref reader)
@@ -63,4 +67,14 @@ public abstract record class InputComponentPacket<TValue> : GUIComponentPacket, 
         other.Name == Name &&
         other.IsEnabled == IsEnabled &&
         other.DefaultValue.Equals(DefaultValue);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(base.GetHashCode());
+        hash.Add(Name);
+        hash.Add(IsEnabled);
+        hash.Add(DefaultValue);
+        return hash.ToHashCode();
+    }
+
 }

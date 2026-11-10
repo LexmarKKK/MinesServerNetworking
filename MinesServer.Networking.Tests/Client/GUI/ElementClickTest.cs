@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Client.GUI;
 
-internal class ElementClickTest : RootClientPacketTest<ElementClickPacket>
+internal sealed class ElementClickTest : RootClientPacketTest<ElementClickPacket>
 {
     public override ElementClickPacket Packet => new(
         "TestWindow",

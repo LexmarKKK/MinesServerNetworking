@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Input;
 
-internal class TextBoxTest : PacketTest<TextBoxPacket>
+internal sealed class TextBoxTest : PacketTest<TextBoxPacket>
 {
     public override TextBoxPacket Packet => new()
     {

@@ -1,4 +1,4 @@
-﻿using MinesServer.Networking.Exceptions;
+using MinesServer.Networking.Exceptions;
 using MinesServer.Networking.Server.Packets.GUI.Components;
 using MinesServer.Utils;
 using System;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.GUI;
 
 public readonly record struct OpenWindowPacket(string WindowTag, ushort Width, ushort Height, IGUIComponentPacket Content) : IRootServerPacket<OpenWindowPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<OpenWindowPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<OpenWindowPacket>();
 
     public readonly int Size =>
         sizeof(byte) // WindowTag.Length
@@ -32,6 +32,23 @@ public readonly record struct OpenWindowPacket(string WindowTag, ushort Width, u
 
     public int Encode(Span<byte> output)
     {
+        if (string.IsNullOrEmpty(WindowTag))
+        {
+            throw new ArgumentException("WindowTag must be set.", nameof(WindowTag));
+        }
+        if (Width == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(Width));
+        }
+        if (Height == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(Height));
+        }
+        if (Content is null)
+        {
+            throw new ArgumentNullException(nameof(Content));
+        }
+
         var writer = output.Writer();
         writer.WriteU1PrefixedASCII(WindowTag);
         writer.Write(Width);

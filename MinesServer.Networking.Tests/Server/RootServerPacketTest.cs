@@ -10,11 +10,18 @@ internal abstract class RootServerPacketTest<TPacket> : PacketTest<TPacket> wher
     {
         var packet = new ServerPacket(Packet);
         Span<byte> encoded = stackalloc byte[packet.Size];
-        _ = packet.Encode(encoded);
-        var pack = ServerPacket.Decode(encoded);
+        int written = packet.Encode(encoded);
+        var frame = encoded[..written];
+        var pack = ServerPacket.Decode(frame);
         Assert.That(pack, Is.EqualTo(packet));
         Span<byte> re_encoded = stackalloc byte[pack.Size];
-        _ = pack.Encode(re_encoded);
-        Assert.That(encoded.ToArray(), Is.EquivalentTo(re_encoded.ToArray()));
+        int re_written = pack.Encode(re_encoded);
+        var originalBytes = frame.ToArray();
+        var reEncodedBytes = re_encoded[..re_written].ToArray();
+        Assert.Multiple(() =>
+        {
+            Assert.That(re_written, Is.EqualTo(written));
+            Assert.That(originalBytes, Is.EqualTo(reEncodedBytes));
+        });
     }
 }

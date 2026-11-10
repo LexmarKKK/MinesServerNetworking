@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.GUI.Input;
 
-internal class StringDropdownTest : PacketTest<StringDropdownPacket>
+internal sealed class StringDropdownTest : PacketTest<StringDropdownPacket>
 {
     public override StringDropdownPacket Packet => new()
     {

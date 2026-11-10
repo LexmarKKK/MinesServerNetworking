@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace MinesServer.Networking.Tests.Server.Inventory;
 
-internal class SelectItemTest : RootServerPacketTest<SelectItemPacket>
+internal sealed class SelectItemTest : RootServerPacketTest<SelectItemPacket>
 {
     public override SelectItemPacket Packet => new(
         ItemType.ProtonBomb,
@@ -14,5 +14,5 @@ internal class SelectItemTest : RootServerPacketTest<SelectItemPacket>
         3,
         5,
         true,
-        new BitArray(Enumerable.Range(0, 64).Select(x => Random.Shared.Next(0, 2) == 0).ToArray()));
+        new BitArray(Enumerable.Range(0, 64).Select(x => x % 3 == 0).ToArray()));
 }

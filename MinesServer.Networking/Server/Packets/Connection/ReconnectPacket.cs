@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Connection;
 
 public readonly record struct ReconnectPacket(string Reason) : IRootServerPacket<ReconnectPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ReconnectPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ReconnectPacket>();
 
     public int Size =>
         Reason.Length * 2; // Reason

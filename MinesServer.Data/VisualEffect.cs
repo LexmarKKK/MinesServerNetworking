@@ -1,6 +1,6 @@
 ﻿namespace MinesServer.Data;
 
-public enum VFX : byte
+public enum VisualEffect : byte
 {
     Bz,
     Death,

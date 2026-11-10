@@ -1,6 +1,6 @@
 ﻿namespace MinesServer.Data;
 
-public enum SFX : byte
+public enum AudioEventType : byte
 {
     Bz,
     Death,
@@ -18,6 +18,6 @@ public enum SFX : byte
     Heal,
     Hurt,
     GunShot,
-    Music, // Plays music
-    Alarm // Programmator sound
+    Music,
+    Alarm
 }

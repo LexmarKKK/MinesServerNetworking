@@ -1,4 +1,5 @@
-﻿using MinesServer.Networking.Shared.Packets;
+using MinesServer.Networking.Contracts.Packets;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace MinesServer.Networking.Client.Packets.GUI;
 
 public readonly record struct ElementClickPacket(string WindowTag, int ElementIndex, IReadOnlyList<StringPairPacket> Context) : IRootClientPacket<ElementClickPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<ElementClickPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<ElementClickPacket>();
 
     public int Size =>
         sizeof(byte) // WindowTag.Length
@@ -18,6 +19,20 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
 
     public int Encode(Span<byte> output)
     {
+        if (Context is null)
+        {
+            throw new ArgumentNullException(nameof(Context));
+        }
+
+        if (string.IsNullOrEmpty(WindowTag))
+        {
+            throw new ArgumentException("WindowTag must be set.", nameof(WindowTag));
+        }
+        if (ElementIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ElementIndex));
+        }
+
         var writer = output.Writer();
         writer.WriteU1PrefixedASCII(WindowTag);
         writer.Write(ElementIndex);
@@ -45,4 +60,15 @@ public readonly record struct ElementClickPacket(string WindowTag, int ElementIn
         WindowTag == other.WindowTag &&
         ElementIndex == other.ElementIndex &&
         Context.SequenceEqual(other.Context);
+
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(WindowTag);
+        hash.Add(ElementIndex);
+        foreach (var item in Context)
+            hash.Add(item);
+        return hash.ToHashCode();
+    }
+
 }

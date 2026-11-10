@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.Information;
 
 public readonly record struct PlayerInfoPacket(uint PlayerId, uint BotId, string Nickname) : IRootServerPacket<PlayerInfoPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<PlayerInfoPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<PlayerInfoPacket>();
 
     public int Size =>
         sizeof(uint) + // PlayerId

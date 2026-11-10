@@ -1,6 +1,6 @@
-﻿using MinesServer.Networking.Client.Packets;
+using MinesServer.Networking.Client.Packets;
 using MinesServer.Networking.Server.Packets;
-using MinesServer.Networking.Shared;
+using MinesServer.Networking.Contracts;
 using NetCoreServer;
 
 namespace MinesServer.Networking.Connection.Server;
@@ -9,7 +9,7 @@ public class TcpConnection : TcpSession, IClientConnection
 {
     private readonly PacketBuffer _buffer = new();
 
-    bool _isDisconnecting = false;
+    bool _isDisconnecting;
 
     private int _decodeErrorCount;
 
@@ -73,7 +73,7 @@ public class TcpConnection : TcpSession, IClientConnection
     }
 
 
-    private event Action<ClientPacket> _onReceived;
+    private event Action<ClientPacket>? _onReceived;
 
     event Action<ClientPacket> IConnection<ClientPacket, ServerPacket>.OnReceived
     {
@@ -88,7 +88,7 @@ public class TcpConnection : TcpSession, IClientConnection
         }
     }
 
-    private event Action<Exception> _onError;
+    private event Action<Exception>? _onError;
 
     event Action<Exception> IConnection<ClientPacket, ServerPacket>.OnError
     {
@@ -105,7 +105,7 @@ public class TcpConnection : TcpSession, IClientConnection
 
     int IConnection<ClientPacket, ServerPacket>.DecodeErrorCount => _decodeErrorCount;
 
-    private event Action _onConnected;
+    private event Action? _onConnected;
 
     event Action IConnection<ClientPacket, ServerPacket>.OnConnected
     {
@@ -120,7 +120,7 @@ public class TcpConnection : TcpSession, IClientConnection
         }
     }
 
-    private event Action _onConnecting;
+    private event Action? _onConnecting;
 
     event Action IConnection<ClientPacket, ServerPacket>.OnConnecting
     {
@@ -135,7 +135,7 @@ public class TcpConnection : TcpSession, IClientConnection
         }
     }
 
-    private event Action _onDisconnected;
+    private event Action? _onDisconnected;
 
     event Action IConnection<ClientPacket, ServerPacket>.OnDisconnected
     {
@@ -150,7 +150,7 @@ public class TcpConnection : TcpSession, IClientConnection
         }
     }
 
-    private event Action _onDisconnecting;
+    private event Action? _onDisconnecting;
     event Action IConnection<ClientPacket, ServerPacket>.OnDisconnecting
     {
         add

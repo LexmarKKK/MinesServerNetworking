@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace MinesServer.Networking.Tests.Server.Chat;
 
-internal class ChatListPacketTest : RootServerPacketTest<ChatListPacket>
+internal sealed class ChatListPacketTest : RootServerPacketTest<ChatListPacket>
 {
     public override ChatListPacket Packet => new([("en", "English", new(1, 1000, 42, 5, Color.Red, "Player", Color.White, "Hello"))]);
 }

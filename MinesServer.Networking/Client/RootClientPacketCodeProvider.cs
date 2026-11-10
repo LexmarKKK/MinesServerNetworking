@@ -1,4 +1,5 @@
-﻿using MinesServer.Networking.Client.Packets.Actions;
+#nullable enable
+using MinesServer.Networking.Client.Packets.Actions;
 using MinesServer.Networking.Client.Packets.Chat;
 using MinesServer.Networking.Client.Packets.Connection;
 using MinesServer.Networking.Client.Packets.GUI;
@@ -8,7 +9,7 @@ using MinesServer.Networking.Client.Packets.Utilities;
 
 namespace MinesServer.Networking.Client;
 
-public class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClientPacket, byte, RootClientPacketCodeProvider>
+public sealed class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClientPacket, byte, RootClientPacketCodeProvider>
 {
     static RootClientPacketCodeProvider()
     {
@@ -44,5 +45,6 @@ public class RootClientPacketCodeProvider : NetworkPacketCodeProvider<IRootClien
         // последовательно, вставка в середину сдвигает коды всех последующих пакетов.
         Register<OpenChatListPacket>();
         Register<ChatMessageClickPacket>();
+        Register<ClientReadyPacket>();
     }
 }

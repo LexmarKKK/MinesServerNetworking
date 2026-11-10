@@ -2,9 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-#if NET7_0_OR_GREATER
-using System.Text.Unicode;
-#endif
 
 namespace MinesServer.Utils
 {
@@ -17,6 +14,8 @@ namespace MinesServer.Utils
     // Darkar25 @ 2024
     public ref struct MemoryWriter
     {
+        private static readonly UTF8Encoding s_strictUtf8 = new(false, true);
+
         public MemoryWriter(Span<byte> destination)
         {
             _original = destination;
@@ -41,7 +40,7 @@ namespace MinesServer.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write<T>(T value, int sizeHint) where T : unmanaged
         {
-            MemoryMarshal.Write(Remaining, ref value);
+            Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(Remaining), value);
             Advance(sizeHint);
         }
 
@@ -440,19 +439,9 @@ namespace MinesServer.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteUtf8AtOffsetNoAdvance(string value, out int bytesWritten, int offset)
         {
-            var maxByteCount = (value.Length + 1) * 3;
-#if NET7_0_OR_GREATER
-            var dest = Remaining[offset..(offset+maxByteCount)];
-            Utf8.FromUtf16(value.AsSpan(), dest, out var _, out bytesWritten, replaceInvalidSequences: false);
-#else
-            unsafe
-            {
-                fixed (char* chars = value)
-                {
-                    bytesWritten = Encoding.UTF8.GetBytes(chars, value.Length, (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(Remaining[offset..])), maxByteCount);
-                }
-            }
-#endif
+            int maxByteCount = s_strictUtf8.GetMaxByteCount(value.Length);
+            Span<byte> destination = Remaining.Slice(offset, maxByteCount);
+            bytesWritten = s_strictUtf8.GetBytes(value.AsSpan(), destination);
         }
 
         #endregion

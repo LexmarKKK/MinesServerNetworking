@@ -19,10 +19,7 @@ public enum BuildingType : ushort
     Port = 'P',
     Bomb = 'B',
     Sign = 'I',
-    Observatory = 'P',
-    /// <summary>
-    /// Не совсем понимаю для чего это используется у мячина. Но типа обработчик в клиенте есть так что пусть будет и тут.
-    /// </summary>
+    Observatory = 'A',
     Invalid = 'C',
     BombShop = 'b',
     Beacon = 'Z', // Почему Z...

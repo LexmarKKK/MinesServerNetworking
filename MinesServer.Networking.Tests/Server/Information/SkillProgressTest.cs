@@ -3,7 +3,7 @@ using MinesServer.Networking.Server.Packets.Information;
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class SkillProgressTest : RootServerPacketTest<SkillProgressPacket>
+internal sealed class SkillProgressTest : RootServerPacketTest<SkillProgressPacket>
 {
     public override SkillProgressPacket Packet => new(SkillType.Jewelry, 12345, 67890);
 }

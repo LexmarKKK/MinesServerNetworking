@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information;
 
-internal class MissionInitTest : RootServerPacketTest<MissionInitPacket>
+internal sealed class MissionInitTest : RootServerPacketTest<MissionInitPacket>
 {
     public override MissionInitPacket Packet => new(
     "missions/intro.png",

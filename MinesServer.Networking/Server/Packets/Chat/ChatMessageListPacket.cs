@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Server.Packets.Chat;
 
 public readonly record struct ChatMessageListPacket(string Tag, IReadOnlyList<ChatMessagePacket> Messages) : IRootServerPacket<ChatMessageListPacket>
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<ChatMessageListPacket>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<ChatMessageListPacket>();
 
     public int Size =>
         sizeof(byte) + // Tag.Length
@@ -42,4 +42,13 @@ public readonly record struct ChatMessageListPacket(string Tag, IReadOnlyList<Ch
     public bool Equals(ChatMessageListPacket other) =>
         Tag == other.Tag &&
         Messages.SequenceEqual(other.Messages);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Tag);
+        foreach (var message in Messages)
+            hash.Add(message);
+        return hash.ToHashCode();
+    }
+
 }

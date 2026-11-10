@@ -2,9 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-#if NET7_0_OR_GREATER
-using System.Text.Unicode;
-#endif
 
 namespace MinesServer.Utils;
 
@@ -17,6 +14,8 @@ namespace MinesServer.Utils;
 // Darkar25 @ 2024
 public unsafe ref struct MemoryReader
 {
+    private static readonly UTF8Encoding s_strictUtf8 = new(false, true);
+
     private ReadOnlySpan<byte> original;
     public ReadOnlySpan<byte> Remaining { get; private set; }
 
@@ -24,7 +23,7 @@ public unsafe ref struct MemoryReader
     {
     }
 
-    public MemoryReader(ref byte reference, int length) : this(new ReadOnlySpan<byte>(Unsafe.AsPointer(ref reference), length))
+    public MemoryReader(ref byte reference, int length) : this(MemoryMarshal.CreateReadOnlySpan(ref reference, length))
     {
     }
 
@@ -193,16 +192,7 @@ public unsafe ref struct MemoryReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadUtf8(int length)
     {
-        string ret;
-#if NET7_0_OR_GREATER
-        ret = string.Create(Encoding.UTF8.GetCharCount(Remaining[..length]), ((IntPtr)Unsafe.AsPointer(ref MemoryMarshal.GetReference(Remaining)), length), static (dest, state) =>
-        {
-            var src = new Span<byte>((byte*)state.Item1, state.length);
-            Utf8.ToUtf16(src, dest, out var bytesRead, out var charsWritten, replaceInvalidSequences: false);
-        });
-#else
-        ret = Encoding.UTF8.GetString(Remaining[..length].ToArray());
-#endif
+        string ret = s_strictUtf8.GetString(Remaining[..length]);
         Advance(length);
         return ret;
     }

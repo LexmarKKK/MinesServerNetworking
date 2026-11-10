@@ -8,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.Compression;
 
 public readonly record struct LZ4Packet(IRootServerPacket Payload) : IRootServerPacket<LZ4Packet>, IUnreliableLengthPacket
 {
-    public ushort PacketCode => RootServerPacketCodeProvider.Cache<LZ4Packet>.Code;
+    public ushort PacketCode => RootServerPacketCodeProvider.GetPacketCode<LZ4Packet>();
 
     /// <summary>
     /// Верхняя граница: префикс длины плюс худший случай сжатия. Оценка включает

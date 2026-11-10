@@ -10,13 +10,12 @@ using MinesServer.Networking.Server;
 namespace MinesServer.Networking.Tests;
 
 /// <summary>
-/// <summary>
 /// Негативные тесты на malformed-ввод.
 ///
 /// Покрытия не было: тесты пустых пакетов проходили одинаково и для настоящей
 /// реализации, и для заглушки.
 /// </summary>
-internal class MalformedPacketTests
+internal sealed class MalformedPacketTests
 {
     [Test]
     public void ServerPacket_TruncatedPayload_IsRejected()
@@ -113,7 +112,10 @@ internal class MalformedPacketTests
 
         Assert.That(written, Is.EqualTo(named.Size));
         var decoded = (TextBoxPacket)GUIComponentPacketCodeProvider.GetDecoder((byte)8)(buffer.AsSpan(0, written));
-        Assert.That(decoded.Name, Is.EqualTo("nickname"));
-        Assert.That(decoded.DefaultValue, Is.EqualTo("abc"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(decoded.Name, Is.EqualTo("nickname"));
+            Assert.That(decoded.DefaultValue, Is.EqualTo("abc"));
+        });
     }
 }

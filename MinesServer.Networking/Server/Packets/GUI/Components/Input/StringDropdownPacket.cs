@@ -1,4 +1,6 @@
-﻿using MinesServer.Utils;
+#nullable enable
+using MinesServer.Utils;
+using MinesServer.Networking.Server.Packets.GUI;
 using System;
 using System.Linq;
 
@@ -6,7 +8,7 @@ namespace MinesServer.Networking.Server.Packets.GUI.Components.Input;
 
 public record class StringDropdownPacket : DropdownComponentPacket<string>, IGUIComponentPacket<StringDropdownPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<StringDropdownPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<StringDropdownPacket>();
 
     public override string DefaultValue { get; init; } = "NULL";
     public override string[] Values { get; init; } = new[] { "NULL" };
@@ -20,6 +22,11 @@ public record class StringDropdownPacket : DropdownComponentPacket<string>, IGUI
 
     public override int Encode(Span<byte> output)
     {
+        if (Values is null)
+        {
+            throw new ArgumentNullException(nameof(Values));
+        }
+
         var writer = output.Writer();
         writer.Advance(base.Encode(output));
         writer.WriteU1PrefixedUtf16(DefaultValue);
@@ -46,4 +53,6 @@ public record class StringDropdownPacket : DropdownComponentPacket<string>, IGUI
     public StringDropdownPacket() { }
 
     public virtual bool Equals(StringDropdownPacket? other) => base.Equals(other);
+    public override int GetHashCode() => base.GetHashCode();
+
 }

@@ -1,4 +1,4 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace MinesServer.Networking.Client.Packets.Programmator;
 
 public readonly record struct QueryProgramMemoryPacket(IReadOnlyList<string> Variables, ushort ArrayStart, ushort ArrayStop) : IRootClientPacket<QueryProgramMemoryPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<QueryProgramMemoryPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<QueryProgramMemoryPacket>();
 
     public int Size =>
         sizeof(ushort) + // ArrayStart
@@ -39,4 +39,15 @@ public readonly record struct QueryProgramMemoryPacket(IReadOnlyList<string> Var
         ArrayStart == other.ArrayStart &&
         ArrayStop == other.ArrayStop &&
         Variables.SequenceEqual(other.Variables);
+
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(ArrayStart);
+        hash.Add(ArrayStop);
+        foreach (var variable in Variables)
+            hash.Add(variable);
+        return hash.ToHashCode();
+    }
+
 }

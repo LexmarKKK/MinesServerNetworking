@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Information.StatusPanel;
 
-internal class ClearStatusTest : RootServerPacketTest<ClearStatusPacket>
+internal sealed class ClearStatusTest : RootServerPacketTest<ClearStatusPacket>
 {
     public override ClearStatusPacket Packet => new();
 }

@@ -2,7 +2,7 @@
 
 namespace MinesServer.Networking.Tests.Server.Utilities;
 
-internal class RuntimeAssetTest : RootServerPacketTest<RuntimeAssetPacket>
+internal sealed class RuntimeAssetTest : RootServerPacketTest<RuntimeAssetPacket>
 {
     public override RuntimeAssetPacket Packet => new(
         "assets/logo.png",

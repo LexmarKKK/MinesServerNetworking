@@ -1,4 +1,6 @@
-﻿using MinesServer.Networking.Shared.Packets;
+#nullable enable
+using MinesServer.Networking.Contracts.Packets;
+using MinesServer.Networking.Server.Packets.GUI;
 using MinesServer.Utils;
 using System;
 using System.Linq;
@@ -23,6 +25,11 @@ public abstract record class GUIComponentPacket : IGUIComponentPacket
 
     public virtual int Encode(Span<byte> output)
     {
+        if (AttachedProperties is null)
+        {
+            throw new ArgumentNullException(nameof(AttachedProperties));
+        }
+
         var writer = output.Writer();
         writer.Write(Style is not null);
         if(Style is not null)
@@ -54,7 +61,17 @@ public abstract record class GUIComponentPacket : IGUIComponentPacket
     protected GUIComponentPacket() { }
 
     public virtual bool Equals(GUIComponentPacket? other) =>
-        Style == other?.Style &&
-        OnClickContext == other?.OnClickContext &&
-        AttachedProperties.SequenceEqual(other?.AttachedProperties);
+        other is not null &&
+        Style == other.Style &&
+        OnClickContext == other.OnClickContext &&
+        AttachedProperties.SequenceEqual(other.AttachedProperties);
+    public override int GetHashCode()
+    {
+        var hash = new System.HashCode();
+        hash.Add(Style);
+        hash.Add(OnClickContext);
+        foreach (var property in AttachedProperties)
+            hash.Add(property);
+        return hash.ToHashCode();
+    }
 }

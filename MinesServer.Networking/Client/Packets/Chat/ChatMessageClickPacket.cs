@@ -11,7 +11,7 @@ namespace MinesServer.Networking.Client.Packets.Chat;
 /// </summary>
 public readonly record struct ChatMessageClickPacket(string Tag, long MessageId) : IRootClientPacket<ChatMessageClickPacket>
 {
-    public byte PacketCode => RootClientPacketCodeProvider.Cache<ChatMessageClickPacket>.Code;
+    public byte PacketCode => RootClientPacketCodeProvider.GetPacketCode<ChatMessageClickPacket>();
 
     public int Size =>
         sizeof(byte) // Tag.Length

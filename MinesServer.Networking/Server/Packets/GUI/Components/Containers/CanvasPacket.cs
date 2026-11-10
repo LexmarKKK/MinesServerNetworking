@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Containers;
 
 public record class CanvasPacket : ContainerComponentPacket, IGUIComponentPacket<CanvasPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<CanvasPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<CanvasPacket>();
 
     public static CanvasPacket Decode(ReadOnlySpan<byte> input)
     {

@@ -1,11 +1,11 @@
-﻿using MinesServer.Utils;
+using MinesServer.Utils;
 using System;
 
 namespace MinesServer.Networking.Server.Packets.GUI.Components.Containers;
 
 public record class DockPanelPacket : ContainerComponentPacket, IGUIComponentPacket<DockPanelPacket>
 {
-    public override byte PacketCode => GUIComponentPacketCodeProvider.Cache<DockPanelPacket>.Code;
+    public override byte PacketCode => GUIComponentPacketCodeProvider.GetPacketCode<DockPanelPacket>();
 
     public static DockPanelPacket Decode(ReadOnlySpan<byte> input)
     {
