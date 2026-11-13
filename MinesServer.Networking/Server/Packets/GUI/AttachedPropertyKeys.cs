@@ -38,6 +38,10 @@ public static class AttachedPropertyKeys
     /// состояние наведения. Кнопка без варианта — обычная клавиша скина.
     public const string ButtonVariant = "Button.Variant";
 
+    /// Гарнитура текста: значения — имена из перечня клиента (Display = Exo 2,
+    /// Mono = JetBrains Mono; пусто/неизвестно — основной текст, Onest).
+    public const string TextFont = "Text.Font";
+
     /// Размер любого элемента в px: применяется как style.width/height
     /// вне зависимости от контейнера, в отличие от Canvas.*. Ноль или
     /// отсутствие ключа — размер по контейнеру.
